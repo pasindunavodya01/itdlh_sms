@@ -25,8 +25,11 @@ app.use('/api/users', userRoutes);
 const adminRoutes = require('./routes/admins');
 app.use('/api/admins', adminRoutes);
 
-const courseRoutes = require("./routes/courses");
-app.use("/api/courses", courseRoutes);
-
 const paymentRoutes = require('./routes/payment');
 app.use('/api/payments', paymentRoutes);
+
+const courseRoutes = require('./routes/courses');
+app.use('/api/courses', courseRoutes);
+
+const registrationRoutes = require('./routes/registration');
+app.use('/api/registration', registrationRoutes);
