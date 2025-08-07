@@ -48,16 +48,14 @@ router.post("/full-register", async (req, res) => {
         if (err) return res.status(500).json({ error: "Database error (student_courses)" });
 
         // 4. Store payments in payments table
-const splitAmount = payments[0].amount_paid / courses.length;
-const splitDue = payments[0].amount_due / courses.length;
-
-const paymentValues = courses.map((course_id) => [
-  student.admission_number,
-  course_id,
-  splitDue,
-  splitAmount,
-  payments[0].payment_type,
-]);
+        // Use the payment data directly from the frontend (already calculated correctly)
+        const paymentValues = payments.map((payment) => [
+          student.admission_number,
+          payment.course_id,
+          payment.amount_due,
+          payment.amount_paid,
+          payment.payment_type,
+        ]);
 
         const paymentSql = `
           INSERT INTO payments (admission_number, course_id, amount_due, amount_paid, payment_type)

@@ -2,6 +2,27 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
+// Get student courses by admission number
+router.get("/courses/:admissionNumber", (req, res) => {
+  const { admissionNumber } = req.params;
+
+  const sql = `
+    SELECT c.* 
+    FROM courses c 
+    INNER JOIN student_courses sc ON c.course_id = sc.course_id 
+    WHERE sc.admission_number = ?
+  `;
+  
+  db.query(sql, [admissionNumber], (err, result) => {
+    if (err) {
+      console.error("Error fetching student courses:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    
+    res.status(200).json({ courses: result });
+  });
+});
+
 // Get all students endpoint
 router.get("/all", (req, res) => {
   const sql = "SELECT * FROM users WHERE role = 'student' ORDER BY name";
