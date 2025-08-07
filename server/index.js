@@ -33,3 +33,6 @@ app.use('/api/courses', courseRoutes);
 
 const registrationRoutes = require('./routes/registration');
 app.use('/api/registration', registrationRoutes);
+
+const studentRoutes = require('./routes/studentRoutes');
+app.use('/api/students', studentRoutes);
