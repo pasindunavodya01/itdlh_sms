@@ -2,6 +2,20 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
+// Get all students endpoint
+router.get("/all", (req, res) => {
+  const sql = "SELECT * FROM users WHERE role = 'student' ORDER BY name";
+  
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("Error fetching all students:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    
+    res.status(200).json({ students: result });
+  });
+});
+
 // Debug endpoint to check all users in database
 router.get("/debug/users", (req, res) => {
   // Check admins
