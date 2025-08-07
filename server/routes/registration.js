@@ -55,10 +55,11 @@ router.post("/full-register", async (req, res) => {
           payment.amount_due,
           payment.amount_paid,
           payment.payment_type,
+          payment.receipt_no // Add receipt_no
         ]);
 
         const paymentSql = `
-          INSERT INTO payments (admission_number, course_id, amount_due, amount_paid, payment_type)
+          INSERT INTO payments (admission_number, course_id, amount_due, amount_paid, payment_type, receipt_no)
           VALUES ?
         `;
         db.query(paymentSql, [paymentValues], (err) => {
