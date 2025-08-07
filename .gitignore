@@ -1,0 +1,19 @@
+# Node dependencies
+node_modules/
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# Build output
+dist/
+build/
+
+# System files
+.DS_Store
+
+# Firebase
+server/firebase/serviceAccountKey.json
+
