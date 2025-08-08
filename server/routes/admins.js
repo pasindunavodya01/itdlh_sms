@@ -35,4 +35,16 @@ router.post('/register', async (req, res) => {
   }
 });
 
+router.get('/', (req, res) => {
+  const sql = 'SELECT id, name, email FROM admins';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("MySQL error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
+
 module.exports = router;
