@@ -1,4 +1,3 @@
-// server/index.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -15,12 +14,8 @@ app.get('/', (req, res) => {
   res.send("Student Management System Backend Running!");
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
 const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
-
 
 const adminRoutes = require('./routes/admins');
 app.use('/api/admins', adminRoutes);
@@ -36,3 +31,6 @@ app.use('/api/registration', registrationRoutes);
 
 const studentRoutes = require('./routes/studentRoutes');
 app.use('/api/students', studentRoutes);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
