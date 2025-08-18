@@ -193,4 +193,99 @@ router.post("/register", (req, res) => {
   );
 });
 
+// Update student details
+router.put("/update/:uid", (req, res) => {
+  const { uid } = req.params;
+  const {
+    admission_number,
+    batch,
+    name,
+    residential_tel,
+    whatsapp_number,
+    gender,
+    nic_number,
+    email,
+    address,
+    school,
+  } = req.body;
+
+  const sql = `
+    UPDATE users 
+    SET admission_number = ?, batch = ?, name = ?, residential_tel = ?, 
+        whatsapp_number = ?, gender = ?, nic_number = ?, email = ?, 
+        address = ?, school = ?
+    WHERE uid = ?
+  `;
+
+  db.query(
+    sql,
+    [
+      admission_number,
+      batch,
+      name,
+      residential_tel,
+      whatsapp_number,
+      gender,
+      nic_number,
+      email,
+      address,
+      school,
+      uid,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating student:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Student not found" });
+      }
+
+      res.status(200).json({ message: "Student updated successfully" });
+    }
+  );
+});
+
+// Update or add special note
+router.put("/:uid/note", (req, res) => {
+  const { uid } = req.params;
+  const { special_note } = req.body;
+
+  const sql = "UPDATE users SET special_note = ? WHERE uid = ?";
+
+  db.query(sql, [special_note, uid], (err, result) => {
+    if (err) {
+      console.error("Error updating note:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res.json({ success: true, message: "Note saved successfully" });
+  });
+});
+
+// GET /api/students/with-notes
+router.get('/with-notes', (req, res) => {
+  const sql = `
+    SELECT uid, name, admission_number, email, batch, whatsapp_number, special_note
+    FROM users
+    WHERE special_note IS NOT NULL AND special_note != ''
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching students with notes:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    res.json({ students: results });
+  });
+});
+
+
+
 module.exports = router;
