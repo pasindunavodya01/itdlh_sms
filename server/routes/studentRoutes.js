@@ -286,6 +286,103 @@ router.get('/with-notes', (req, res) => {
   });
 });
 
+// 1. Student submits update request
+router.post("/request-update/:uid", (req, res) => {
+  const { uid } = req.params;
+
+  // Only allow specific fields
+  const allowedFields = ["admission_number", "residential_tel", "whatsapp_number", "address"];
+  const requestedData = req.body;
+  const filteredData = {};
+
+  for (const key of Object.keys(requestedData)) {
+    if (allowedFields.includes(key)) filteredData[key] = requestedData[key];
+  }
+
+  if (Object.keys(filteredData).length === 0) {
+    return res.status(400).json({ message: "No valid fields to request update" });
+  }
+
+  const sql = "INSERT INTO student_update_requests (student_uid, requested_data) VALUES (?, ?)";
+  db.query(sql, [uid, JSON.stringify(filteredData)], (err, result) => {
+    if (err) {
+      console.error("Error creating update request:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.status(201).json({ message: "Update request submitted successfully" });
+  });
+});
+
+// 2. Admin fetches all requests
+router.get("/requests", (req, res) => {
+  const sql = `
+    SELECT r.id, r.student_uid, r.requested_data, r.status, r.created_at,
+           u.name, u.email, u.admission_number
+    FROM student_update_requests r
+    JOIN users u ON r.student_uid = u.uid
+    ORDER BY r.created_at DESC
+  `;
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching requests:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json({ requests: results });
+  });
+});
+
+// Admin approves request
+router.put("/requests/:id/approve", (req, res) => {
+  const { id } = req.params;
+
+  const sqlGet = "SELECT * FROM student_update_requests WHERE id = ?";
+  db.query(sqlGet, [id], (err, results) => {
+    if (err) return res.status(500).json({ message: "Database error" });
+    if (results.length === 0) return res.status(404).json({ message: "Request not found" });
+
+    const request = results[0];
+    const requestedData = JSON.parse(request.requested_data);
+
+    // Only allow WhatsApp, Residential number, and Address updates
+    const allowedFields = ["residential_tel", "whatsapp_number", "address"];
+    const validData = {};
+    for (const key of Object.keys(requestedData)) {
+      if (allowedFields.includes(key) && requestedData[key].trim() !== "") {
+        validData[key] = requestedData[key];
+      }
+    }
+
+    if (Object.keys(validData).length === 0)
+      return res.status(400).json({ message: "No valid fields to update" });
+
+    const fields = Object.keys(validData).map(key => `${key} = ?`).join(", ");
+    const values = Object.values(validData);
+    const sqlUpdate = `UPDATE users SET ${fields} WHERE uid = ?`;
+
+    db.query(sqlUpdate, [...values, request.student_uid], (err2) => {
+      if (err2) return res.status(500).json({ message: "Failed to apply update" });
+
+      db.query("UPDATE student_update_requests SET status = 'approved' WHERE id = ?", [id], (err3) => {
+        if (err3) return res.status(500).json({ message: "Failed to update request status" });
+        res.json({ message: "Request approved and student updated" });
+      });
+    });
+  });
+});
+
+
+
+// 4. Admin rejects request
+router.put("/requests/:id/reject", (req, res) => {
+  const { id } = req.params;
+  db.query("UPDATE student_update_requests SET status = 'rejected' WHERE id = ?", [id], (err) => {
+    if (err) {
+      console.error("Error rejecting request:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json({ message: "Request rejected" });
+  });
+});
 
 
 module.exports = router;
