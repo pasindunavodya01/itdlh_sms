@@ -42,8 +42,9 @@ router.post("/full-register", async (req, res) => {
       if (err) return res.status(500).json({ error: "Database error (users)" });
 
       // 3. Store courses in student_courses table
-      const courseValues = courses.map((c) => [student.admission_number, c.course_id, c.class]);
-      const courseSql = `INSERT INTO student_courses (admission_number, course_id, class) VALUES ?`;
+   const courseValues = courses.map((c) => [student.admission_number, c.course_id, c.class_id]);
+const courseSql = `INSERT INTO student_courses (admission_number, course_id, class_id) VALUES ?`;
+
       db.query(courseSql, [courseValues], (err) => {
         if (err) return res.status(500).json({ error: "Database error (student_courses)" });
 
