@@ -104,61 +104,73 @@ router.get("/check-role/:uid", (req, res) => {
   });
 });
 
-// Get student profile with courses and payments
 router.get("/profile/:uid", (req, res) => {
   const { uid } = req.params;
 
-  // Get student data
   const studentSql = "SELECT * FROM users WHERE uid = ?";
   db.query(studentSql, [uid], (err, studentResult) => {
-    if (err) {
-      console.error("Error fetching student:", err);
-      return res.status(500).json({ message: "Database error" });
-    }
-
-    if (studentResult.length === 0) {
-      return res.status(404).json({ message: "Student not found" });
-    }
-
+    if (err) return res.status(500).json({ message: "Database error" });
+    if (studentResult.length === 0) return res.status(404).json({ message: "Student not found" });
+    
     const student = studentResult[0];
 
-    // Get enrolled courses
+    // Get student courses with class details
     const coursesSql = `
-      SELECT c.* 
-      FROM courses c 
-      INNER JOIN student_courses sc ON c.course_id = sc.course_id 
+      SELECT sc.course_id, sc.class_id, c.course_name, c.amount, cc.class_name
+      FROM student_courses sc
+      INNER JOIN courses c ON sc.course_id = c.course_id
+      LEFT JOIN course_classes cc ON sc.class_id = cc.class_id
       WHERE sc.admission_number = ?
     `;
-    
     db.query(coursesSql, [student.admission_number], (err, coursesResult) => {
-      if (err) {
-        console.error("Error fetching courses:", err);
-        return res.status(500).json({ message: "Database error" });
-      }
+      if (err) return res.status(500).json({ message: "Database error" });
 
-      // Get payment history
+      // Get payment history for the student
       const paymentsSql = `
-        SELECT p.*, c.course_name 
-        FROM payments p 
-        INNER JOIN courses c ON p.course_id = c.course_id 
+        SELECT p.*, c.course_name
+        FROM payments p
+        INNER JOIN courses c ON p.course_id = c.course_id
         WHERE p.admission_number = ?
+        ORDER BY p.payment_date DESC
       `;
-      
       db.query(paymentsSql, [student.admission_number], (err, paymentsResult) => {
-        if (err) {
-          console.error("Error fetching payments:", err);
-          return res.status(500).json({ message: "Database error" });
+        if (err) return res.status(500).json({ message: "Database error" });
+
+        // Also get all available classes for each course
+        const courseIds = coursesResult.map(c => c.course_id);
+        if (courseIds.length === 0) {
+          return res.json({ 
+            student, 
+            courses: [], 
+            payments: paymentsResult || []
+          });
         }
 
-        res.status(200).json({
-          student,
-          courses: coursesResult,
-          payments: paymentsResult
+        const availableClassesSql = `
+          SELECT * FROM course_classes
+          WHERE course_id IN (?)
+        `;
+        db.query(availableClassesSql, [courseIds], (err, classesResult) => {
+          if (err) return res.status(500).json({ message: "Database error" });
+
+          // Attach availableClasses to each student course
+          const courses = coursesResult.map(course => ({
+            ...course,
+            availableClasses: classesResult.filter(cls => cls.course_id === course.course_id)
+          }));
+
+          res.json({ 
+            student, 
+            courses, 
+            payments: paymentsResult || []
+          });
         });
       });
     });
   });
 });
+
+//register a new student
 
 router.post("/register", (req, res) => {
   const {
@@ -381,6 +393,30 @@ router.put("/requests/:id/reject", (req, res) => {
       return res.status(500).json({ message: "Database error" });
     }
     res.json({ message: "Request rejected" });
+  });
+});
+
+
+router.put("/classes/:uid/:course_id", (req, res) => {
+  const { uid, course_id } = req.params;
+  const { class_id } = req.body; // can be null for "no class"
+
+  // Get student admission number
+  db.query("SELECT admission_number FROM users WHERE uid = ?", [uid], (err, result) => {
+    if (err) return res.status(500).json({ message: "Database error" });
+    if (result.length === 0) return res.status(404).json({ message: "Student not found" });
+
+    const admission_number = result[0].admission_number;
+
+    // Update class in student_courses
+    db.query(
+      "UPDATE student_courses SET class_id = ? WHERE admission_number = ? AND course_id = ?",
+      [class_id, admission_number, course_id],
+      (err2) => {
+        if (err2) return res.status(500).json({ message: "Database error" });
+        res.json({ message: "Class updated successfully" });
+      }
+    );
   });
 });
 
