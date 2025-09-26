@@ -36,12 +36,14 @@ app.use('/api/students', studentRoutes);
 const attendanceRoutes = require('./routes/attendance');
 app.use('/api/attendance', attendanceRoutes);
 
-// ✅ New Routes
 const eligibilityRoutes = require('./routes/eligibility');
 app.use('/api/eligibility', eligibilityRoutes);
 
 const marksRoutes = require('./routes/marks');
 app.use('/api/marks', marksRoutes);
+
+const chatbotRoutes = require('./routes/chatbot'); // <-- new
+app.use('/api/chatbot', chatbotRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
