@@ -1,58 +1,142 @@
 {
   "greeting": "Hello! Welcome to IT & Distance Learning Hub - Negombo. How can I assist you today?",
-  "institute_type": "Government Institute",
+  "institute_type": "Government Institute ",
   "location": "ITDLH,Dalupotha, Negombo, Sri Lanka",
   "website": "https://www.ITDLHNegombo.gov.lk",
   "socials": {
     "facebook": "https://www.facebook.com/ITDLHNegombo",
-    "instagram": "https://www.instagram.com/ITDLHNegombo",
-    "linkedin": "https://www.linkedin.com/school/itdlh-negombo/"
+    "instagram": "https://www.instagram.com/ITDLHNegombo ",
+    "linkedin": "https://www.linkedin.com/school/itdlh-negombo/a"
   },
-  "departments": ["Web Development", "Data Science", "Cybersecurity", "Graphic Design", "Network Administration"],
   "facilities": [
-    "State-of-the-art computer labs",
-    "High-speed internet",
-    "Online learning platform",
-    "Library with digital resources",
-    "Career counseling & placement support"
+    "Computer Lab with High-Speed Internet",
+    "Projector & Smart Classrooms",
+    "Air-Conditioned Classrooms",
+    "Career counseling & placement support",
+    "Wi-Fi for Students & Staff",
+    "Friendly Staff"
   ],
   "scholarships": [
     "Merit-based scholarships for top performers",
     "Need-based financial assistance"
   ],
   "courses": [
-    { "name": "Certificate Course in Office Application", "price": 7000, "start_date": "2025-10-01", "duration": "4 weeks", "eligibility": "Basic computer knowledge", "description": "Learn essential office applications including Word, Excel, and PowerPoint.", "mode": "On-campus", "intake_month": "October 2025" },
-    { "name": "Certificate in Photo Editing", "price": 8000, "start_date": "2025-10-01", "duration": "4 weeks", "eligibility": "Basic computer knowledge", "description": "Learn Adobe Photoshop and other tools for photo editing.", "mode": "On-campus", "intake_month": "October 2025" },
-    { "name": "Certificate in Web Designing", "price": 4000, "start_date": "2025-10-01", "duration": "6 weeks", "eligibility": "Basic computer knowledge", "description": "Learn HTML, CSS, and basic web design principles.", "mode": "On-campus", "intake_month": "October 2025" },
-    { "name": "Certificate in Computerized Accounting for SME", "price": 8000, "start_date": "2025-10-01", "duration": "6 weeks", "eligibility": "Basic accounting knowledge", "description": "Learn computerized accounting using popular accounting software.", "mode": "On-campus", "intake_month": "October 2025" },
-    { "name": "Certificate in Python Programming", "price": 5000, "start_date": "2025-10-01", "duration": "8 weeks", "eligibility": "Basic programming knowledge", "description": "Learn Python programming for beginners.", "mode": "On-campus", "intake_month": "October 2025" },
-    { "name": "Certificate in Computer Hardware", "price": 3000, "start_date": "2025-10-01", "duration": "4 weeks", "eligibility": "Basic computer knowledge", "description": "Learn hardware components, maintenance, and troubleshooting.", "mode": "On-campus", "intake_month": "October 2025" },
-    { "name": "Advanced Certificate in Computer Application", "price": 10000, "start_date": "2025-10-01", "duration": "10 weeks", "eligibility": "Basic computer knowledge", "description": "Advanced skills in MS Office and other computer applications.", "mode": "On-campus", "intake_month": "October 2025" },
-    { "name": "Certificate in Essential English Language Skills for Professionals", "price": 8000, "start_date": "2025-10-01", "duration": "6 weeks", "eligibility": "Basic English proficiency", "description": "Improve English communication skills for professional purposes.", "mode": "On-campus", "intake_month": "October 2025" }
+    {
+      "name": "Certificate Course in Office Application",
+      "price": 7000,
+      "start_date": "2025-10-01",
+      "duration": "6 months ",
+      "eligibility": "Basic computer knowledge",
+      "description": "Learn essential office applications including Word, Excel, and PowerPoint.",
+      "mode": "On-campus",
+      "intake_month": "October 2025"
+    },
+    {
+      "name": "Certificate in Photo Editing",
+      "price": 8000,
+      "start_date": "2025-10-01",
+      "duration": "6 months ",
+      "eligibility": "Basic computer knowledge",
+      "description": "Learn Adobe Photoshop and other tools for photo editing.",
+      "mode": "On-campus",
+      "intake_month": "October 2025"
+    },
+    {
+      "name": "Certificate in Web Designing",
+      "price": 4000,
+      "start_date": "2025-10-01",
+      "duration": "1 year",
+      "eligibility": "Basic computer knowledge",
+      "description": "Learn HTML, CSS, and basic web design principles.",
+      "mode": "On-campus",
+      "intake_month": "October 2025"
+    },
+    {
+      "name": "Certificate in Computerized Accounting for SME",
+      "price": 8000,
+      "start_date": "2025-10-01",
+      "duration": "1 year",
+      "eligibility": "Basic accounting knowledge",
+      "description": "Learn computerized accounting using popular accounting software.",
+      "mode": "On-campus",
+      "intake_month": "October 2025"
+    },
+    {
+      "name": "Certificate in Python Programming",
+      "price": 5000,
+      "start_date": "2025-10-01",
+      "duration": "6 months ",
+      "eligibility": "Basic programming knowledge",
+      "description": "Learn Python programming for beginners.",
+      "mode": "On-campus",
+      "intake_month": "October 2025"
+    },
+    {
+      "name": "Certificate in Computer Hardware",
+      "price": 3000,
+      "start_date": "2025-10-01",
+      "duration": "1 year",
+      "eligibility": "Basic computer knowledge",
+      "description": "Learn hardware components, maintenance, and troubleshooting.",
+      "mode": "On-campus",
+      "intake_month": "October 2025"
+    },
+    {
+      "name": "Advanced Certificate in Computer Application",
+      "price": 10000,
+      "start_date": "2025-10-01",
+      "duration": "10 weeks",
+      "eligibility": "Basic computer knowledge",
+      "description": "Advanced skills in MS Office and other computer applications.",
+      "mode": "On-campus",
+      "intake_month": "October 2025"
+    },
+    {
+      "name": "Certificate in Essential English Language Skills for Professionals",
+      "price": 8000,
+      "start_date": "2025-10-01",
+      "duration": "6 months ",
+      "eligibility": "Basic English proficiency",
+      "description": "Improve English communication skills for professional purposes.",
+      "mode": "On-campus",
+      "intake_month": "October 2025"
+    }
   ],
   "lecturers": [
-    { "name": "Ms. Gayana", "course": "Computing" },
-    { "name": "Ms. Rohini", "course": "English" },
-    { "name": "Ms. Manoji", "course": "Computing" },
-    { "name": "Mr. Vijaya", "course": "Computing" },
-    { "name": "Ms. Rizna", "course": "Computing" }
-    
-
+    {
+      "name": "Ms. Gayana",
+      "course": "Computing"
+    },
+    {
+      "name": "Ms. Rohini",
+      "course": "English"
+    },
+    {
+      "name": "Ms. Manoji",
+      "course": "Computing"
+    },
+    {
+      "name": "Mr. Vijaya",
+      "course": "Computing"
+    },
+    {
+      "name": "Ms. Rizna",
+      "course": "Computing"
+    }
   ],
   "contact": {
     "email": "info@moha.gov.lk",
     "phone": "+94 112 785 141",
     "address": "ITDLH, Dalupotha, Negombo, Sri Lanka"
   },
-
   "faqs": {
-    "admission process": "You can apply online via the Admissions page or contact the admin for guidance.",
     "contact": "You can reach us at info@moha.gov.lk or call +94 112 785 141.",
     "payment methods": "We accept online payment, bank transfer, and cash payments at the institute.",
     "certificate": "Upon completion, students will receive an official government-recognized certificate.",
     "timings": "Courses are held on weekdays from 6 PM to 9 PM and weekends from 9 AM to 4 PM.",
     "scholarships": "Merit-based and need-based scholarships are available for eligible students.",
-    "support": "Students can contact our support team via email or call for assistance."
+    "support": "Students can contact our support team via email or call for assistance.",
+    "admission process ": "You can apply online via the Admissions page or contact the admin for guidance."
   },
-  "notes": "All courses follow government-approved curriculum and are recognized nationally. Online classes include live sessions and recorded lectures."
+  "notes": "All courses follow government-approved curriculum and are recognized nationally."
 }
