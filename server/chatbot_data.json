@@ -6,15 +6,17 @@
   "socials": {
     "facebook": "https://www.facebook.com/ITDLHNegombo",
     "instagram": "https://www.instagram.com/ITDLHNegombo ",
-    "linkedin": "https://www.linkedin.com/school/itdlh-negombo/a"
+    "linkedin": "https://www.linkedin.com/school/itdlh-negombo"
   },
   "facilities": [
     "Computer Lab with High-Speed Internet",
     "Projector & Smart Classrooms",
     "Air-Conditioned Classrooms",
-    "Career counseling & placement support",
+    "Security & CCTV Surveillance",
     "Wi-Fi for Students & Staff",
-    "Friendly Staff"
+    "Friendly Staff",
+    "Printing & Scanning Facilities",
+    "Clean and Well-Maintained Labs"
   ],
   "scholarships": [
     "Merit-based scholarships for top performers",
@@ -148,5 +150,6 @@
     "support": "Students can contact our support team via email or call for assistance.",
     "admission process ": "You can apply online via the Admissions page or contact the admin for guidance."
   },
+  "audience": "👥 Our courses are designed for:\n• Students after O/L\n• Students after A/L\n• Working Professionals",
   "notes": "All courses follow government-approved curriculum and are recognized nationally."
 }

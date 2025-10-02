@@ -56,9 +56,11 @@ const RESPONSES = {
   duration: ["duration", "time", "length", "weeks", "period", "months", "years", "long", "how long"],
   start_date: ["start", "starts", "starting", "date", "dates", "begin", "beginning", "commence", "when does"],
   intake: ["intake", "admission month", "admission", "apply", "join", "enroll", "enrol", "registration", "register"],
-  eligibility: ["eligibility", "requirement", "requirements", "criteria", "qualifications", "needed", "prerequisite", "prerequisites", "who can"],
+  audience: ["who can join", "for whom", "eligibility group", "who is it for", "students", "professionals", "job seekers", "entrepreneurs"],
+eligibility: ["eligibility", "requirement", "requirements", "criteria", "qualifications", "needed", "prerequisite", "prerequisites", "who can"],
   description: ["description", "about course", "course info", "course details", "what is", "purpose", "overview", "summary"],
-  about: ["about institute", "tell me about", "information about", "what is this place"]
+  about: ["about institute", "tell me about", "information about", "what is this place"],
+  common: ["can you do", "what can you do", "who are you"],
 };
 
 // Chatbot message handler
@@ -93,7 +95,7 @@ router.post("/", (req, res) => {
 
     // 3️⃣ Fuzzy match main keywords with priority and threshold
     const MIN_MATCH = 0.5; // lowered threshold for better matching
-    const priorityKeys = ["location","contact","courses","lecturers","fees","duration","start_date","intake","eligibility","description","about","institute"];
+    const priorityKeys = ["location","contact","courses","lecturers","fees","duration","start_date","intake","eligibility","description","about","institute", "audience", "common"];
     let bestMatch = null;
     let bestRating = 0;
 
@@ -190,6 +192,18 @@ router.post("/", (req, res) => {
               reply: "We offer multiple IT and English courses for students and professionals. Ask about a specific course for detailed information!" 
             });
           }
+
+
+
+        case "audience":
+          // Use the audience data from the JSON file
+          return res.json({ reply: data.audience });
+
+        case "common":
+          return res.json({ 
+            reply: "I am your ITDLH assistant. What can I help you with?\n\n💡 I can help you with information about our courses, fees, duration, start dates, eligibility, lecturers, location, and contact details. What would you like to know?"
+          });
+          
 
         case "about":
           return res.json({ 
