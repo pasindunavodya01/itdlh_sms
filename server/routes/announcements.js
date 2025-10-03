@@ -12,17 +12,26 @@ router.get('/', (req, res) => {
   if (studentId) {
     // For students - get announcements targeted to them or to all
     sql = `
-      SELECT DISTINCT a.*, COUNT(ar.id) as recipient_count 
+      SELECT DISTINCT 
+        a.*,
+        CASE 
+          WHEN a.target_type = 'all' THEN 'all'
+          ELSE 'you'
+        END as target_display,
+        (SELECT is_read FROM announcement_recipients 
+         WHERE announcement_id = a.id AND student_id = ?) as is_read
       FROM announcements a 
-      LEFT JOIN announcement_recipients ar ON a.id = ar.announcement_id
-      WHERE (a.target_type = 'all' OR 
-            (a.target_type = 'specific' AND EXISTS 
-              (SELECT 1 FROM announcement_recipients ar2 
-               WHERE ar2.announcement_id = a.id AND ar2.student_id = ?)))
-      GROUP BY a.id
+      WHERE a.target_type = 'all' 
+         OR (a.target_type = 'specific' 
+             AND EXISTS (
+               SELECT 1 
+               FROM announcement_recipients ar 
+               WHERE ar.announcement_id = a.id 
+               AND ar.student_id = ?
+             ))
       ORDER BY a.created_at DESC
     `;
-    params = [studentId];
+    params = [studentId, studentId];
   } else {
     // For admins - get all announcements with recipient count
     sql = `
@@ -55,6 +64,11 @@ router.post('/', (req, res) => {
     selected_students
   } = req.body;
 
+  // Validate target_type and selected_students
+  if (target_type === 'specific' && (!selected_students || selected_students.length === 0)) {
+    return res.status(400).json({ message: 'Selected students are required for specific targeting' });
+  }
+
   const announcement = {
     title,
     message,
@@ -73,7 +87,7 @@ router.post('/', (req, res) => {
     const announcementId = result.insertId;
 
     // If specific students are targeted, add them to recipients
-    if (target_type === 'specific' && selected_students && selected_students.length > 0) {
+    if (target_type === 'specific') {
       const recipientValues = selected_students.map(studentId => [announcementId, studentId]);
       
       db.query(
@@ -82,6 +96,8 @@ router.post('/', (req, res) => {
         (err) => {
           if (err) {
             console.error('Error adding recipients:', err);
+            // If adding recipients fails, delete the announcement
+            db.query('DELETE FROM announcements WHERE id = ?', [announcementId]);
             return res.status(500).json({ message: 'Error adding recipients' });
           }
           res.status(201).json({ 

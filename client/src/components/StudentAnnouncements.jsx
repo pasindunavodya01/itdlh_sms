@@ -71,22 +71,22 @@ export default function StudentAnnouncements() {
   };
 
   if (loading) {
-    return <div className="p-4">Loading announcements...</div>;
+    return <div className="p-4 sm:p-6">Loading announcements...</div>;
   }
 
   if (error) {
-    return <div className="p-4 text-red-500">{error}</div>;
+    return <div className="p-4 sm:p-6 text-red-500">{error}</div>;
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Announcements</h1>
+    <div className="container mx-auto p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4">Announcements</h1>
       
       <div className="space-y-4">
         {announcements.map(announcement => (
           <div 
             key={announcement.id}
-            className={`bg-white p-4 rounded shadow ${
+            className={`bg-white p-4 rounded-lg shadow-md ${
               announcement.priority === 'high' 
                 ? 'border-l-4 border-red-500'
                 : announcement.priority === 'medium'
@@ -94,21 +94,21 @@ export default function StudentAnnouncements() {
                 : 'border-l-4 border-green-500'
             }`}
           >
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="text-lg font-semibold">{announcement.title}</h3>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+              <h3 className="text-lg font-semibold mb-2 sm:mb-0">{announcement.title}</h3>
               {!announcement.is_read && (
                 <button
                   onClick={() => markAsRead(announcement.id)}
-                  className="text-sm bg-blue-100 text-blue-600 px-2 py-1 rounded hover:bg-blue-200"
+                  className="text-sm bg-blue-100 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-200 self-start sm:self-center"
                 >
                   Mark as read
                 </button>
               )}
             </div>
             
-            <p className="text-gray-600 mb-2">{announcement.message}</p>
+            <p className="text-gray-700 mb-3">{announcement.message}</p>
             
-            <div className="flex gap-4 text-sm text-gray-500">
+            <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500">
               <span className={`font-medium ${
                 announcement.priority === 'high' 
                   ? 'text-red-500'
@@ -119,9 +119,12 @@ export default function StudentAnnouncements() {
                 {announcement.priority.charAt(0).toUpperCase() + announcement.priority.slice(1)} Priority
               </span>
               <span>From: {announcement.sender_name}</span>
+              <span>
+                Target: {announcement.target_display === 'all' ? 'All Students' : 'You'}
+              </span>
               <span>{new Date(announcement.created_at).toLocaleDateString()}</span>
               {announcement.is_read && (
-                <span className="text-green-500">✓ Read</span>
+                <span className="text-green-500 font-semibold">✓ Read</span>
               )}
             </div>
           </div>

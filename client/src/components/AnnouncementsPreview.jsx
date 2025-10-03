@@ -79,8 +79,13 @@ export default function AnnouncementsPreview() {
           >
             <h3 className="text-md font-semibold">{announcement.title}</h3>
             <p className="text-gray-600 text-sm truncate">{announcement.message}</p>
-            <div className="flex justify-between text-xs text-gray-500 mt-2">
-              <span>From: {announcement.sender_name}</span>
+            <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
+              <div className="flex gap-2">
+                <span>From: {announcement.sender_name}</span>
+                <span>
+                  ({announcement.target_display === 'all' ? 'All Students' : 'For You'})
+                </span>
+              </div>
               <span>{new Date(announcement.created_at).toLocaleDateString()}</span>
             </div>
           </div>
