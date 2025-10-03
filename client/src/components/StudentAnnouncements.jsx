@@ -28,9 +28,18 @@ export default function StudentAnnouncements() {
           return;
         }
 
+        // Get the student ID from the response
+        const studentId = studentResponse.data.student?.id || studentResponse.data.id;
+
+        if (!studentId) {
+          setError('Student ID not found');
+          setLoading(false);
+          return;
+        }
+
         // Fetch announcements for this student
         const response = await axios.get(`http://localhost:5000/api/announcements`, {
-          params: { studentId: studentResponse.data.id }
+          params: { studentId: studentId }
         });
 
         setAnnouncements(response.data.announcements);
@@ -54,8 +63,15 @@ export default function StudentAnnouncements() {
         `http://localhost:5000/api/students/profile/${user.uid}`
       );
 
+      const studentId = studentResponse.data.student?.id || studentResponse.data.id;
+
+      if (!studentId) {
+        console.error('Student ID not found');
+        return;
+      }
+
       await axios.post(`http://localhost:5000/api/announcements/${announcementId}/read`, {
-        studentId: studentResponse.data.id
+        studentId: studentId
       });
 
       // Update the local state to reflect the change

@@ -605,7 +605,7 @@ const PublicHomePage = () => {
                     
                     <div className="border-t pt-4 flex items-center justify-between">
                       <div>
-                        <div className="text-sm text-gray-500">Course Fee</div>
+                        <div className="text-sm text-gray-500">Facility Fee</div>
                         <div className="text-2xl font-bold text-red-600">
                           Rs. {Number(course.price).toLocaleString()}
                         </div>
@@ -621,7 +621,34 @@ const PublicHomePage = () => {
           </div>
         </section>
 
+        {/* Fee Information Section */}
+        <section id="fees" className="py-8 px-6 bg-gray-50">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              className="bg-white border-l-8 border-red-500 rounded-2xl p-8 shadow-lg"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-start">
+                <div className="pr-6 flex-shrink-0">
+                  <FaAward className="text-5xl text-red-500" />
+                </div>
+                <div>
+  <h2 className="text-4xl font-bold text-gray-800 mb-3">A Note on Our Fees</h2>
+  <p className="text-m sm:text-xl text-gray-700 leading-relaxed">
+    This is a <strong>government institute</strong>, and all the course fees are covered by the government. The fee is for the facilities given to you and to maintain the labs.
+  </p>
+</div>
+
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Lecturers Section - Enhanced */}
+
         <section id="lecturers" className="py-20 px-6">
           <div className="max-w-7xl mx-auto">
             <motion.div

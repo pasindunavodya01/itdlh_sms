@@ -22,19 +22,27 @@ export default function AnnouncementsPreview() {
           `http://localhost:5000/api/students/profile/${user.uid}`
         );
 
-        if (!studentResponse.data || !studentResponse.data.student) {
+        if (!studentResponse.data) {
           setError('Student profile not found');
           setLoading(false);
           return;
         }
         
-        const studentId = studentResponse.data.student.id;
+        // Fix: Get the correct student ID based on your API response structure
+        // Check if the response has 'student.id' or just 'id'
+        const studentId = studentResponse.data.student?.id || studentResponse.data.id;
+
+        if (!studentId) {
+          setError('Student ID not found');
+          setLoading(false);
+          return;
+        }
 
         const response = await axios.get(`http://localhost:5000/api/announcements`, {
-          params: { studentId: studentId, limit: 3 } // Assuming the backend supports a limit
+          params: { studentId: studentId }
         });
         
-        // If backend doesn't support limit, we slice it here.
+        // Limit to 3 most recent announcements
         const limitedAnnouncements = response.data.announcements.slice(0, 3);
 
         setAnnouncements(limitedAnnouncements);
