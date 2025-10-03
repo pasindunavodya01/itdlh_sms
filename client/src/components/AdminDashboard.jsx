@@ -129,7 +129,7 @@ export default function AdminDashboard() {
         <Link to="/admin/announcements">
           <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
             <h2 className="text-xl font-semibold mb-2">Announcements</h2>
-            <p className="text-gray-600">View and manage announcements.</p>
+            <p className="text-gray-600">Send and manage announcements to students.</p>
           </div>
         </Link>
       </div>

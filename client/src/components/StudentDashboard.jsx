@@ -128,6 +128,12 @@ export default function StudentDashboard() {
             >
               View Marks
             </Link>
+            <Link
+              to="/student/announcements"
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              Announcements
+            </Link>
             <button
               onClick={handleLogout}
               className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"

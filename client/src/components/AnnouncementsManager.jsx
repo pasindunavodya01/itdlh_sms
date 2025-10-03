@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function AdminAnnouncements() {
+export default function AnnouncementsManager() {
   const [announcements, setAnnouncements] = useState([]);
   const [students, setStudents] = useState([]);
   const [title, setTitle] = useState('');
