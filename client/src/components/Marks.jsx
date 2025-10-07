@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { FaBookOpen, FaClipboardList, FaSpinner } from 'react-icons/fa';
+import { BsEmojiFrown } from 'react-icons/bs';
 
 const LessonBasedExamManagement = () => {
   const [activeTab, setActiveTab] = useState('lessons');
@@ -15,6 +17,7 @@ const LessonBasedExamManagement = () => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Form states
   const [showLessonForm, setShowLessonForm] = useState(false);
@@ -315,10 +318,39 @@ const LessonBasedExamManagement = () => {
     return 'text-yellow-600';
   };
 
+  // Loading state
   if (initialLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-lg text-gray-600">Loading...</div>
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50">
+        <FaSpinner className="animate-spin text-4xl text-firebrick mb-4" />
+        <div className="text-lg text-gray-600">Loading course information...</div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50">
+        <BsEmojiFrown className="text-4xl text-red-500 mb-4" />
+        <div className="text-lg text-gray-600 mb-2">{error}</div>
+        <button 
+          onClick={fetchCourses} 
+          className="px-4 py-2 bg-firebrick text-white rounded hover:bg-darkRed transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  // Empty courses state
+  if (!initialLoading && courses.length === 0) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50">
+        <FaBookOpen className="text-4xl text-gray-400 mb-4" />
+        <div className="text-lg text-gray-600 mb-2">No courses available</div>
+        <div className="text-sm text-gray-500">Please add courses first</div>
       </div>
     );
   }
@@ -364,6 +396,7 @@ const LessonBasedExamManagement = () => {
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={!selectedCourse}
               >
                 <option value="">All Classes</option>
                 {classes.map(cls => (
@@ -376,7 +409,21 @@ const LessonBasedExamManagement = () => {
           </div>
         </div>
 
-        {selectedCourse && (
+        {!selectedCourse ? (
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            <FaClipboardList className="mx-auto text-5xl text-gray-400 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Course Selected</h3>
+            <p className="text-gray-500 mb-4">Please select a course to view and manage marks</p>
+            <div className="text-sm text-gray-400">
+              You can:
+              <ul className="mt-2 list-disc list-inside">
+                <li>View and manage lesson-based assessments</li>
+                <li>Record and update student marks</li>
+                <li>Generate final grades and statistics</li>
+              </ul>
+            </div>
+          </div>
+        ) : (
           <>
             {/* Tab Navigation */}
             <div className="bg-white rounded-lg shadow mb-6">
