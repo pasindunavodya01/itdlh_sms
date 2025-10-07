@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 export default function AdminAnnouncements() {
@@ -97,8 +98,13 @@ export default function AdminAnnouncements() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Manage Announcements</h1>
-      
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Manage Announcements</h1>
+        <Link to="/admin/dashboard" className="bg-firebrick text-white px-4 py-2 rounded hover:bg-darkRed">
+            Back to Dashboard
+        </Link>
+      </div>
+       
       {statusMessage && (
         <div className="mb-4 p-2 bg-blue-100 text-blue-700 rounded">
           {statusMessage}

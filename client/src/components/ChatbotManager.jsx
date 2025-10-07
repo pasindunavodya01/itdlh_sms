@@ -175,7 +175,7 @@ const ChatbotManager = () => {
 
           <Link
           to="/admin/dashboard"
-          className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700" >
+          className="bg-firebrick text-white px-4 py-2 rounded hover:bg-darkRed" >
             Back to Dashboard
             </Link>
 

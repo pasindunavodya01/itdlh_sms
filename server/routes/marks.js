@@ -454,6 +454,43 @@ router.delete('/lessons/:lessonId/marks/:admissionNumber', (req, res) => {
   });
 });
 
+// ===== STUDENT-FACING ROUTES =====
+
+// Get marks summary for a specific student
+router.get('/students/marks/summary', (req, res) => {
+  const { admission_number } = req.query;
+
+  if (!admission_number) {
+    return res.status(400).json({ message: 'Admission number is required' });
+  }
+
+  const sql = `
+    SELECT 
+      lm.mark_id,
+      c.course_name,
+      cl.lesson_name,
+      cc.class_name,
+      lm.marks_obtained,
+      cl.max_marks as total_marks,
+      (lm.marks_obtained / cl.max_marks * 100) as percentage,
+      lm.grade
+    FROM lesson_marks lm
+    JOIN course_lessons cl ON lm.lesson_id = cl.lesson_id
+    JOIN courses c ON cl.course_id = c.course_id
+    LEFT JOIN course_classes cc ON cl.class_id = cc.class_id
+    WHERE lm.admission_number = ?
+    ORDER BY c.course_name, cl.lesson_name
+  `;
+
+  db.query(sql, [admission_number], (err, results) => {
+    if (err) {
+      console.error('Error fetching student marks summary:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+    res.json({ marks: results });
+  });
+});
+
 // ===== FINAL GRADES AND STATISTICS =====
 
 // Get final grades for a course
