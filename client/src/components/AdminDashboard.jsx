@@ -104,6 +104,20 @@ export default function AdminDashboard() {
           </div>
         </Link>
 
+        <Link to="/admin/course-structures">
+          <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            <h2 className="text-xl font-semibold mb-2">Course Structures</h2>
+            <p className="text-gray-600">Manage course structures.</p>
+          </div>
+        </Link>
+
+        <Link to="/admin/batch-courses">
+          <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            <h2 className="text-xl font-semibold mb-2">Batch Courses</h2>
+            <p className="text-gray-600">Manage batch courses.</p>
+          </div>
+        </Link>
+
         <Link to="/admin/view-admins">
           <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
             <h2 className="text-xl font-semibold mb-2">Manage Admins</h2>

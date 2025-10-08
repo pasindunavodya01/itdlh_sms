@@ -16,10 +16,11 @@ import StudentUpdateRequests from "./components/StudentUpdateRequests";
 import AttendancePage from "./components/AttendancePage";
 import MarksPage from "./components/Marks";
 import StudentMarks from "./components/StudentMarks";
-import ChatbotManager from "./components/ChatbotManager"; // Import the new component
-import AdminAnnouncements from "./components/AdminAnnouncements"; // Import the new component
-import StudentAnnouncements from "./components/StudentAnnouncements"; // Import the new component
-
+import ChatbotManager from "./components/ChatbotManager";
+import AdminAnnouncements from "./components/AdminAnnouncements";
+import StudentAnnouncements from "./components/StudentAnnouncements";
+import CourseStructureManager from "./components/CourseStructureManager";
+import BatchCourseManager from "./components/BatchCourseManager";
 
 function App() {
   const location = useLocation();
@@ -145,6 +146,16 @@ function App() {
           }
         />
 
+        {/* Course Structure Manager */}
+        <Route
+          path="/admin/course-structure"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <CourseStructureManager />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Attendance Page */}
         <Route
           path="/admin/attendance"
@@ -183,6 +194,35 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Admin Routes */}
+<Route
+  path="/admin/course-structures"
+  element={
+    <ProtectedRoute requiredRole="admin">
+      <CourseStructureManager />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/batch-courses"
+  element={
+    <ProtectedRoute requiredRole="admin">
+      <BatchCourseManager />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/attendance/manage/:batchCourseId"
+  element={
+    <ProtectedRoute requiredRole="admin">
+      <AttendancePage />
+    </ProtectedRoute>
+  }
+/>
+
 
         {/* Manage Chatbot */}
         <Route 
