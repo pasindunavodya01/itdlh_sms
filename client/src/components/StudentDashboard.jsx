@@ -9,6 +9,7 @@ export default function StudentDashboard() {
   const [studentData, setStudentData] = useState(null);
   const [courses, setCourses] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [updateRequests, setUpdateRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -35,6 +36,12 @@ export default function StudentDashboard() {
         setStudentData(response.data.student);
         setCourses(response.data.courses);
         setPayments(response.data.payments);
+
+        const requestsResponse = await axios.get(
+          `http://localhost:5000/api/students/my-requests/${user.uid}`
+        );
+        setUpdateRequests(requestsResponse.data.requests);
+
         setLoading(false);
       } catch (err) {
         console.error("Error fetching student data:", err);
@@ -552,17 +559,36 @@ export default function StudentDashboard() {
                   </div>
                 )}
 
-                <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-start">
-                    <svg className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"></path>
-                    </svg>
-                    <div className="text-sm text-blue-800">
-                      <p className="font-semibold mb-1">Note:</p>
-                      <p>Your update request will be reviewed by the administrator. You'll be notified once it's approved.</p>
+                {/* Previous Requests */}
+                {updateRequests.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="text-lg font-bold text-gray-800 mb-3">Your Update Requests</h3>
+                    <div className="space-y-4">
+                      {updateRequests.map((req) => (
+                        <div key={req.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <p className="text-sm font-medium text-gray-700">
+                              Request on {new Date(req.created_at).toLocaleDateString()}
+                            </p>
+                            <span
+                              className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                                req.status === "pending"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : req.status === "approved"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}>
+                              {req.status}
+                            </span>
+                          </div>
+                          <pre className="bg-gray-100 p-2 mt-2 rounded text-sm text-gray-600">
+                            {JSON.stringify(JSON.parse(req.requested_data), null, 2)}
+                          </pre>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

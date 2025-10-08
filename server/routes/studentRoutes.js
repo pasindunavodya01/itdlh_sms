@@ -396,6 +396,19 @@ router.put("/requests/:id/reject", (req, res) => {
   });
 });
 
+// 5. Student fetches their own requests
+router.get("/my-requests/:uid", (req, res) => {
+  const { uid } = req.params;
+  const sql = "SELECT * FROM student_update_requests WHERE student_uid = ? ORDER BY created_at DESC";
+  db.query(sql, [uid], (err, results) => {
+    if (err) {
+      console.error("Error fetching student requests:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json({ requests: results });
+  });
+});
+
 
 router.put("/classes/:uid/:course_id", (req, res) => {
   const { uid, course_id } = req.params;
