@@ -392,22 +392,100 @@ router.post('/session/:id/attendance', (req, res) => {
 // ==================== ATTENDANCE SUMMARY ROUTES ====================
 
 // Get student attendance summary
-router.get('/student-attendance/:studentId', (req, res) => {
+router.get('/student-attendance/:studentId', async (req, res) => {
   const { studentId } = req.params;
 
-  const sql = `
-    SELECT * FROM student_attendance_summary
-    WHERE student_id = ?
-    ORDER BY course_name, class_name
-  `;
+  try {
+    // First get the student's courses
+    const coursesQuery = `
+      SELECT DISTINCT
+        bc.batch_course_id,
+        bc.batch,
+        c.course_id,
+        c.course_name,
+        cc.class_name,
+        cs.total_sessions,
+        cs.minimum_attendance_percentage
+      FROM student_courses sc
+      JOIN users u ON sc.admission_number = u.admission_number
+      JOIN batch_courses bc ON sc.course_id = bc.course_id 
+        AND (sc.class_id = bc.class_id OR bc.class_id IS NULL)
+        AND u.batch = bc.batch
+      JOIN courses c ON bc.course_id = c.course_id
+      LEFT JOIN course_classes cc ON bc.class_id = cc.class_id
+      JOIN course_structure cs ON bc.structure_id = cs.structure_id
+      WHERE u.id = ? AND bc.is_active = true
+    `;
 
-  db.query(sql, [studentId], (err, results) => {
-    if (err) {
-      console.error('Error fetching student attendance:', err);
-      return res.status(500).json({ error: 'Failed to fetch attendance summary' });
-    }
-    res.json(results);
-  });
+    const courses = await new Promise((resolve, reject) => {
+      db.query(coursesQuery, [studentId], (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
+
+    // For each course, get attendance details
+    const attendanceSummary = await Promise.all(courses.map(async (course) => {
+      // Get regular sessions attendance
+      const regularQuery = `
+        SELECT 
+          COUNT(DISTINCT s.session_id) as total_conducted_sessions,
+          COUNT(DISTINCT CASE WHEN a.status = 'present' THEN s.session_id END) as attended_sessions
+        FROM sessions s
+        LEFT JOIN attendance a ON s.session_id = a.session_id AND a.student_id = ?
+        WHERE s.batch_course_id = ? AND s.session_type = 'regular'
+      `;
+
+      // Get supporting sessions attendance
+      const supportingQuery = `
+        SELECT 
+          COUNT(DISTINCT CASE WHEN a.status = 'present' THEN s.session_id END) as supporting_sessions_attended
+        FROM sessions s
+        LEFT JOIN attendance a ON s.session_id = a.session_id AND a.student_id = ?
+        WHERE s.batch_course_id = ? AND s.session_type = 'supporting'
+      `;
+
+      const [regularResults, supportingResults] = await Promise.all([
+        new Promise((resolve, reject) => {
+          db.query(regularQuery, [studentId, course.batch_course_id], (err, results) => {
+            if (err) reject(err);
+            else resolve(results[0]);
+          });
+        }),
+        new Promise((resolve, reject) => {
+          db.query(supportingQuery, [studentId, course.batch_course_id], (err, results) => {
+            if (err) reject(err);
+            else resolve(results[0]);
+          });
+        })
+      ]);
+
+      const regular_attendance_percentage = 
+        (regularResults.attended_sessions / regularResults.total_conducted_sessions) * 100 || 0;
+
+      // Calculate eligibility
+      let exam_eligibility = 'not_eligible';
+      if (regular_attendance_percentage >= course.minimum_attendance_percentage) {
+        exam_eligibility = 'eligible';
+      } else if (regular_attendance_percentage >= 60 && supportingResults.supporting_sessions_attended > 0) {
+        exam_eligibility = 'eligible_via_supporting';
+      }
+
+      return {
+        ...course,
+        ...regularResults,
+        ...supportingResults,
+        regular_attendance_percentage,
+        exam_eligibility
+      };
+    }));
+
+    res.json(attendanceSummary);
+
+  } catch (error) {
+    console.error('Error calculating attendance summary:', error);
+    res.status(500).json({ error: 'Failed to calculate attendance summary' });
+  }
 });
 
 // Get attendance summary by batch course
