@@ -23,6 +23,7 @@ import CourseStructureManager from "./components/CourseStructureManager";
 import BatchCourseManager from "./components/BatchCourseManager";
 import StudentAttendance from "./components/StudentAttendance";
 
+
 function App() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
