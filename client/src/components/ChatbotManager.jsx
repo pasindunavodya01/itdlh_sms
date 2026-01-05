@@ -26,7 +26,7 @@ const ChatbotManager = () => {
   const fetchChatbotData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://itdlhsms-production.up.railway.app/api/chatbot/data');
+      const response = await fetch('https://itdlhsms-production.up.railway.app/api/chatbot/data');
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -101,7 +101,7 @@ const ChatbotManager = () => {
       setSaving(true);
       setError(null);
       
-      const response = await fetch('http://itdlhsms-production.up.railway.app/api/chatbot/data', {
+      const response = await fetch('https://itdlhsms-production.up.railway.app/api/chatbot/data', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

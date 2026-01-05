@@ -44,7 +44,7 @@ const PublicHomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://itdlhsms-production.up.railway.app/api/chatbot/data");
+        const res = await fetch("https://itdlhsms-production.up.railway.app/api/chatbot/data");
         const jsonData = await res.json();
         setData(jsonData);
       } catch (err) {
@@ -956,7 +956,7 @@ const SMSLoginForm = () => {
       const user = result.user;
       
       // Fetch user role from backend
-      const response = await fetch(`http://itdlhsms-production.up.railway.app/api/students/check-role/${user.uid}`);
+      const response = await fetch(`https://itdlhsms-production.up.railway.app/api/students/check-role/${user.uid}`);
       const data = await response.json();
       
       if (data.role === 'admin') {
@@ -1087,7 +1087,7 @@ const ChatBot = () => {
     setMessages(prev => [...prev, { from: "user", text: input }]);
 
     try {
-      const res = await fetch("http://itdlhsms-production.up.railway.app/api/chatbot", {
+      const res = await fetch("https://itdlhsms-production.up.railway.app/api/chatbot", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

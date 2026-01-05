@@ -23,7 +23,7 @@ const ManageCourses = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('http://itdlhsms-production.up.railway.app/api/courses');
+      const response = await axios.get('https://itdlhsms-production.up.railway.app/api/courses');
       setCourses(response.data);
       setLoading(false);
     } catch (err) {
@@ -60,13 +60,13 @@ const ManageCourses = () => {
     setError('');
     try {
       if (editingCourse) {
-        await axios.put(`http://itdlhsms-production.up.railway.app/api/courses/${editingCourse.course_id}`, {
+        await axios.put(`https://itdlhsms-production.up.railway.app/api/courses/${editingCourse.course_id}`, {
           ...formData,
           classes
         });
         alert('Course and classes updated successfully!');
       } else {
-        await axios.post('http://itdlhsms-production.up.railway.app/api/courses', {
+        await axios.post('https://itdlhsms-production.up.railway.app/api/courses', {
           ...formData,
           classes
         });
@@ -98,7 +98,7 @@ const ManageCourses = () => {
   const handleDelete = async (courseId) => {
     if (window.confirm('Are you sure you want to delete this course?')) {
       try {
-        await axios.delete(`http://itdlhsms-production.up.railway.app/api/courses/${courseId}`);
+        await axios.delete(`https://itdlhsms-production.up.railway.app/api/courses/${courseId}`);
         alert('Course deleted successfully!');
         fetchCourses();
       } catch (err) {

@@ -15,7 +15,7 @@ const AdminRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://itdlhsms-production.up.railway.app/api/admins/register", formData);
+      await axios.post("https://itdlhsms-production.up.railway.app/api/admins/register", formData);
       alert("Admin registered successfully!");
       setFormData({ name: "", email: "", password: "" });
     } catch (error) {

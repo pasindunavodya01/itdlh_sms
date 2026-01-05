@@ -28,7 +28,7 @@ const Login = () => {
 
       // Then check user role in our database
       try {
-        const roleResponse = await axios.get(`http://itdlhsms-production.up.railway.app/api/students/check-role/${user.uid}`);
+        const roleResponse = await axios.get(`https://itdlhsms-production.up.railway.app/api/students/check-role/${user.uid}`);
         console.log('Role check response:', roleResponse.data);
         
         const { role } = roleResponse.data;

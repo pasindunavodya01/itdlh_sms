@@ -11,7 +11,7 @@ const ViewAdmins = () => {
   useEffect(() => {
     const fetchAdmins = async () => {
       try {
-        const res = await axios.get("http://itdlhsms-production.up.railway.app/api/admins");
+        const res = await axios.get("https://itdlhsms-production.up.railway.app/api/admins");
         setAdmins(res.data);
         setLoading(false);
       } catch (err) {

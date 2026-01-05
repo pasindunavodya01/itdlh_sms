@@ -20,7 +20,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchPendingRequests = async () => {
       try {
-        const res = await axios.get("http://itdlhsms-production.up.railway.app/api/students/requests");
+        const res = await axios.get("https://itdlhsms-production.up.railway.app/api/students/requests");
         const pending = res.data.requests.filter((r) => r.status === "pending").length;
         setPendingCount(pending);
       } catch (err) {

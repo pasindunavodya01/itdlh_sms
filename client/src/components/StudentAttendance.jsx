@@ -24,7 +24,7 @@ const StudentAttendance = () => {
 
         // First, get the student's profile to get the student ID
         const profileResponse = await axios.get(
-          `http://itdlhsms-production.up.railway.app/api/students/profile/${user.uid}`
+          `https://itdlhsms-production.up.railway.app/api/students/profile/${user.uid}`
         );
         const student = profileResponse.data.student;
         setStudentData(student);
@@ -34,7 +34,7 @@ const StudentAttendance = () => {
           console.log("Fetching attendance for student ID:", student.id);
           // Then, fetch the attendance data using the student ID
           const attendanceResponse = await axios.get(
-            `http://itdlhsms-production.up.railway.app/api/attendance/student-attendance/${student.id}`
+            `https://itdlhsms-production.up.railway.app/api/attendance/student-attendance/${student.id}`
           );
           setAttendanceData(attendanceResponse.data);
           console.log("Attendance API Response:", attendanceResponse.data);

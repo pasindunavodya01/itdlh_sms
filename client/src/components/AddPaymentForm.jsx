@@ -30,7 +30,7 @@ const AddPaymentForm = ({ prev, formData: previousFormData }) => {
       return;
     }
 
-    axios.get('http://itdlhsms-production.up.railway.app/api/courses')
+    axios.get('https://itdlhsms-production.up.railway.app/api/courses')
       .then(res => {
         setCourses(res.data); // Set all courses
         // Filter only the courses that were selected in the previous step
@@ -122,7 +122,7 @@ const handleSubmit = async (e) => {
       password: previousFormData.password || "TempPassword123",
     };
 
-    await axios.post('http://itdlhsms-production.up.railway.app/api/registration/full-register', registrationData);
+    await axios.post('https://itdlhsms-production.up.railway.app/api/registration/full-register', registrationData);
 
     alert('Student fully registered!');
     navigate('/admin/dashboard');

@@ -31,10 +31,10 @@ export default function AttendanceManager() {
   const fetchData = async () => {
     try {
       const [bcRes, sessionsRes, summaryRes, supportRes] = await Promise.all([
-        axios.get(`http://itdlhsms-production.up.railway.app/api/attendance/batch-course/${batchCourseId}`),
-        axios.get(`http://itdlhsms-production.up.railway.app/api/attendance/sessions?batch_course_id=${batchCourseId}`),
-        axios.get(`http://itdlhsms-production.up.railway.app/api/attendance/attendance-summary/${batchCourseId}`),
-        axios.get(`http://itdlhsms-production.up.railway.app/api/attendance/students-needing-support/${batchCourseId}`)
+        axios.get(`https://itdlhsms-production.up.railway.app/api/attendance/batch-course/${batchCourseId}`),
+        axios.get(`https://itdlhsms-production.up.railway.app/api/attendance/sessions?batch_course_id=${batchCourseId}`),
+        axios.get(`https://itdlhsms-production.up.railway.app/api/attendance/attendance-summary/${batchCourseId}`),
+        axios.get(`https://itdlhsms-production.up.railway.app/api/attendance/students-needing-support/${batchCourseId}`)
       ]);
       
       setBatchCourse(bcRes.data);
@@ -50,7 +50,7 @@ export default function AttendanceManager() {
 
   const fetchStudents = async (sessionId) => {
     try {
-      const res = await axios.get(`http://itdlhsms-production.up.railway.app/api/attendance/session/${sessionId}/students`);
+      const res = await axios.get(`https://itdlhsms-production.up.railway.app/api/attendance/session/${sessionId}/students`);
       setStudents(res.data.map(s => ({
         ...s,
         present: s.status === 'present' || s.status === 'Present'
@@ -73,7 +73,7 @@ export default function AttendanceManager() {
         ...formData
       };
       
-      await axios.post('http://itdlhsms-production.up.railway.app/api/attendance/session', payload);
+      await axios.post('https://itdlhsms-production.up.railway.app/api/attendance/session', payload);
       alert('Session created successfully!');
       
       setFormData({
@@ -107,7 +107,7 @@ export default function AttendanceManager() {
       }));
 
       await axios.post(
-        `http://itdlhsms-production.up.railway.app/api/attendance/session/${selectedSession.session_id}/attendance`,
+        `https://itdlhsms-production.up.railway.app/api/attendance/session/${selectedSession.session_id}/attendance`,
         { attendance: payload }
       );
       

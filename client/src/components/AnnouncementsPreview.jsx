@@ -19,7 +19,7 @@ export default function AnnouncementsPreview() {
         }
 
         const studentResponse = await axios.get(
-          `http://itdlhsms-production.up.railway.app/api/students/profile/${user.uid}`
+          `https://itdlhsms-production.up.railway.app/api/students/profile/${user.uid}`
         );
 
         if (!studentResponse.data) {
@@ -38,7 +38,7 @@ export default function AnnouncementsPreview() {
           return;
         }
 
-        const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/announcements`, {
+        const response = await axios.get(`https://itdlhsms-production.up.railway.app/api/announcements`, {
           params: { studentId: studentId }
         });
         

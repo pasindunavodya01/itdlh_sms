@@ -11,7 +11,7 @@ export default function StudentUpdateRequests() {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await axios.get("http://itdlhsms-production.up.railway.app/api/students/requests");
+        const res = await axios.get("https://itdlhsms-production.up.railway.app/api/students/requests");
         setRequests(res.data.requests);
         setLoading(false);
       } catch (err) {
@@ -27,8 +27,8 @@ export default function StudentUpdateRequests() {
     try {
       const endpoint =
         action === "approved"
-          ? `http://itdlhsms-production.up.railway.app/api/students/requests/${id}/approve`
-          : `http://itdlhsms-production.up.railway.app/api/students/requests/${id}/reject`;
+          ? `https://itdlhsms-production.up.railway.app/api/students/requests/${id}/approve`
+          : `https://itdlhsms-production.up.railway.app/api/students/requests/${id}/reject`;
 
       await axios.put(endpoint);
 

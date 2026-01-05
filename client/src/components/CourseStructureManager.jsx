@@ -23,8 +23,8 @@ export default function CourseStructureManager() {
   const fetchData = async () => {
     try {
       const [coursesRes, structuresRes] = await Promise.all([
-        axios.get('http://itdlhsms-production.up.railway.app/api/attendance/courses'),
-        axios.get('http://itdlhsms-production.up.railway.app/api/attendance/course-structures')
+        axios.get('https://itdlhsms-production.up.railway.app/api/attendance/courses'),
+        axios.get('https://itdlhsms-production.up.railway.app/api/attendance/course-structures')
       ]);
       setCourses(coursesRes.data);
       setStructures(structuresRes.data);
@@ -39,10 +39,10 @@ export default function CourseStructureManager() {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`http://itdlhsms-production.up.railway.app/api/attendance/course-structure/${editingId}`, formData);
+        await axios.put(`https://itdlhsms-production.up.railway.app/api/attendance/course-structure/${editingId}`, formData);
         alert('Course structure updated successfully!');
       } else {
-        await axios.post('http://itdlhsms-production.up.railway.app/api/attendance/course-structure', formData);
+        await axios.post('https://itdlhsms-production.up.railway.app/api/attendance/course-structure', formData);
         alert('Course structure created successfully!');
       }
       

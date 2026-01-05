@@ -28,10 +28,10 @@ export default function BatchCourseManager() {
   const fetchData = async () => {
     try {
       const [batchesRes, coursesRes, structuresRes, batchCoursesRes] = await Promise.all([
-        axios.get('http://itdlhsms-production.up.railway.app/api/attendance/batches'),
-        axios.get('http://itdlhsms-production.up.railway.app/api/attendance/courses'),
-        axios.get('http://itdlhsms-production.up.railway.app/api/attendance/course-structures'),
-        axios.get('http://itdlhsms-production.up.railway.app/api/attendance/batch-courses')
+        axios.get('https://itdlhsms-production.up.railway.app/api/attendance/batches'),
+        axios.get('https://itdlhsms-production.up.railway.app/api/attendance/courses'),
+        axios.get('https://itdlhsms-production.up.railway.app/api/attendance/course-structures'),
+        axios.get('https://itdlhsms-production.up.railway.app/api/attendance/batch-courses')
       ]);
       
       setBatches(batchesRes.data);
@@ -47,7 +47,7 @@ export default function BatchCourseManager() {
 
   const fetchClasses = async (courseId) => {
     try {
-      const res = await axios.get(`http://itdlhsms-production.up.railway.app/api/attendance/courses/${courseId}/classes`);
+      const res = await axios.get(`https://itdlhsms-production.up.railway.app/api/attendance/courses/${courseId}/classes`);
       setClasses(res.data);
     } catch (error) {
       console.error('Error fetching classes:', error);
@@ -77,7 +77,7 @@ export default function BatchCourseManager() {
         end_date: formData.end_date || null
       };
       
-      await axios.post('http://itdlhsms-production.up.railway.app/api/attendance/batch-course', payload);
+      await axios.post('https://itdlhsms-production.up.railway.app/api/attendance/batch-course', payload);
       alert('Batch course created successfully!');
       
       setFormData({
@@ -102,7 +102,7 @@ export default function BatchCourseManager() {
     }
 
     try {
-      await axios.put(`http://itdlhsms-production.up.railway.app/api/attendance/batch-course/${batchCourseId}/deactivate`);
+      await axios.put(`https://itdlhsms-production.up.railway.app/api/attendance/batch-course/${batchCourseId}/deactivate`);
       alert('Batch course deactivated successfully!');
       fetchData();
     } catch (error) {

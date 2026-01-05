@@ -11,7 +11,7 @@ const MarkAttendance = ({ sessionId }) => {
     setLoading(true);
 
     axios
-      .get(`http://itdlhsms-production.up.railway.app/api/attendance/session/${sessionId}/students`)
+      .get(`https://itdlhsms-production.up.railway.app/api/attendance/session/${sessionId}/students`)
       .then(res => {
         if (Array.isArray(res.data)) {
           const unique = res.data.reduce((acc, curr) => {
@@ -48,7 +48,7 @@ const MarkAttendance = ({ sessionId }) => {
         status: s.present ? 'present' : 'absent',
       }));
       await axios.post(
-        `http://itdlhsms-production.up.railway.app/api/attendance/session/${sessionId}/attendance`,
+        `https://itdlhsms-production.up.railway.app/api/attendance/session/${sessionId}/attendance`,
         { attendance: payload }
       );
       alert('Attendance updated successfully!');
