@@ -59,15 +59,41 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT_B64) {
       throw err;
     }
   } else {
-    const msg = 'No Firebase service account provided. Set FIREBASE_SERVICE_ACCOUNT_PATH, FIREBASE_SERVICE_ACCOUNT_JSON, GOOGLE_APPLICATION_CREDENTIALS, or add serviceAccountKey.json to server/firebase.';
-    console.error('[firebase-admin] ' + msg);
-    throw new Error(msg);
+    // No credentials found; don't throw here to allow the server to start.
+    // We'll export a stub that will raise clear errors when used.
+    const msg = 'No Firebase service account provided. Set FIREBASE_SERVICE_ACCOUNT_PATH, FIREBASE_SERVICE_ACCOUNT_JSON, FIREBASE_SERVICE_ACCOUNT_B64, GOOGLE_APPLICATION_CREDENTIALS, or add serviceAccountKey.json to server/firebase.';
+    console.warn('[firebase-admin] ' + msg);
+    serviceAccount = null;
   }
 }
 
-// Initialize admin SDK with the loaded service account
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+// If we have a service account, initialize the SDK and export the admin instance.
+if (serviceAccount) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+  module.exports = admin;
+} else {
+  // Export a lightweight stub with an `auth()` method that throws when used.
+  // This prevents the app from crashing at require-time while giving clear
+  // runtime errors when Firebase functionality is invoked.
+  const initError = new Error('Firebase admin not initialized. Provide service account via FIREBASE_SERVICE_ACCOUNT_PATH, FIREBASE_SERVICE_ACCOUNT_JSON, FIREBASE_SERVICE_ACCOUNT_B64, GOOGLE_APPLICATION_CREDENTIALS, or place serviceAccountKey.json in server/firebase.');
 
-module.exports = admin;
+  const stubAuth = {
+    createUser: async () => { throw initError; },
+    getUser: async () => { throw initError; },
+    getUserByEmail: async () => { throw initError; },
+    verifyIdToken: async () => { throw initError; },
+    deleteUser: async () => { throw initError; },
+    updateUser: async () => { throw initError; },
+    setCustomUserClaims: async () => { throw initError; },
+    // Add other commonly used methods as needed; they will all throw the same error.
+  };
+
+  const stub = {
+    isInitialized: false,
+    auth: () => stubAuth,
+  };
+
+  module.exports = stub;
+}
