@@ -8,9 +8,22 @@ const path = require('path');
 // 2. FIREBASE_SERVICE_ACCOUNT_JSON (raw JSON string)
 // 3. existing ./serviceAccountKey.json file (legacy)
 
+// Also support FIREBASE_SERVICE_ACCOUNT_B64 which should contain a base64-encoded
+// JSON string. This is handy for CI/CD or hosting platforms where embedding
+// raw JSON in env vars is awkward.
+
 let serviceAccount;
 
-if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
+if (process.env.FIREBASE_SERVICE_ACCOUNT_B64) {
+  try {
+    const decoded = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_B64, 'base64').toString('utf8');
+    serviceAccount = JSON.parse(decoded);
+    console.info('[firebase-admin] Loaded service account from FIREBASE_SERVICE_ACCOUNT_B64');
+  } catch (err) {
+    console.error('[firebase-admin] Failed to parse FIREBASE_SERVICE_ACCOUNT_B64:', err.message);
+    throw err;
+  }
+} else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
   const p = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
   const resolved = path.isAbsolute(p) ? p : path.join(__dirname, '..', p);
   try {
