@@ -18,6 +18,8 @@ const LessonBasedExamManagement = () => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedBatch, setSelectedBatch] = useState('');
+  const [batches, setBatches] = useState([]);
 
   // Form states
   const [showLessonForm, setShowLessonForm] = useState(false);

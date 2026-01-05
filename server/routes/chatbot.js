@@ -1,9 +1,10 @@
 const express = require("express");
 const fs = require("fs");
 const stringSimilarity = require("string-similarity");
+const path = require("path");
 
 const router = express.Router();
-const DATA_FILE = "./chatbot_data.json";
+const DATA_FILE = path.join(__dirname, "../chatbot_data.json");
 
 // Load JSON data with error handling
 const loadData = () => {
@@ -59,7 +60,7 @@ const RESPONSES = {
   audience: ["who can join", "for whom", "eligibility group", "who is it for", "students", "professionals", "job seekers", "entrepreneurs"],
 eligibility: ["eligibility", "requirement", "requirements", "criteria", "qualifications", "needed", "prerequisite", "prerequisites", "who can"],
   description: ["description", "about course", "course info", "course details", "what is", "purpose", "overview", "summary"],
-  about: ["about institute", "tell me about", "information about", "what is this place"],
+  about: ["about institute", "tell me about", "Why should I", "Choose", "what is this place", "information about", "what is this place"],
   common: ["can you do", "what can you do", "who are you"],
 };
 

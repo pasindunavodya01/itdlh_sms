@@ -14,23 +14,21 @@ router.get('/courses/:courseId/lessons', (req, res) => {
   const { courseId } = req.params;
   const { classId } = req.query;
   
-  let sql = `
-    SELECT 
-      cl.*,
-      CASE 
-        WHEN cl.class_id IS NOT NULL THEN cc.class_name
-        ELSE 'All Classes'
-      END as class_name,
-      COUNT(lm.mark_id) as marked_students,
-      (SELECT COUNT(DISTINCT sc.admission_number) 
-       FROM student_courses sc 
-       WHERE sc.course_id = cl.course_id 
-       AND (cl.class_id IS NULL OR sc.class_id = cl.class_id)) as total_students
-    FROM course_lessons cl
-    LEFT JOIN course_classes cc ON cl.class_id = cc.class_id
-    LEFT JOIN lesson_marks lm ON cl.lesson_id = lm.lesson_id
-    WHERE cl.course_id = ?
-  `;
+  let sql = 'SELECT ' +
+    'cl.*, ' +
+    'CASE ' +
+    '  WHEN cl.class_id IS NOT NULL THEN cc.class_name ' +
+    '  ELSE \'All Classes\' ' +
+    'END as class_name, ' +
+    'COUNT(lm.mark_id) as marked_students, ' +
+    '(SELECT COUNT(DISTINCT sc.admission_number) ' +
+    ' FROM student_courses sc ' +
+    ' WHERE sc.course_id = cl.course_id ' +
+    ' AND (cl.class_id IS NULL OR sc.class_id = cl.class_id)) as total_students ' +
+    'FROM course_lessons cl ' +
+    'LEFT JOIN course_classes cc ON cl.class_id = cc.class_id ' +
+    'LEFT JOIN lesson_marks lm ON cl.lesson_id = lm.lesson_id ' +
+    'WHERE cl.course_id = ?';
   
   const params = [courseId];
   
@@ -68,11 +66,10 @@ router.post('/courses/:courseId/lessons', (req, res) => {
   }
   
   // Check if total weightage will exceed 100%
-  const checkWeightageSql = `
-    SELECT SUM(weightage) as total_weightage 
-    FROM course_lessons 
-    WHERE course_id = ? AND (class_id = ? OR (class_id IS NULL AND ? IS NULL))
-  `;
+  const checkWeightageSql = 
+    'SELECT SUM(weightage) as total_weightage ' +
+    'FROM course_lessons ' +
+    'WHERE course_id = ? AND (class_id = ? OR (class_id IS NULL AND ? IS NULL))';
   
   const processedClassId = (class_id && class_id !== '') ? class_id : null;
   
@@ -85,16 +82,14 @@ router.post('/courses/:courseId/lessons', (req, res) => {
     const currentTotal = results[0]?.total_weightage || 0;
     if (currentTotal + parseFloat(weightage) > 100) {
       return res.status(400).json({ 
-        message: `Total weightage would exceed 100%. Current total: ${currentTotal}%` 
+        message: 'Total weightage would exceed 100%. Current total: ' + currentTotal + '%'
       });
     }
     
-    const insertSql = `
-      INSERT INTO course_lessons (
-        course_id, class_id, lesson_name, lesson_type, 
-        weightage, max_marks, description, due_date
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+    const insertSql = 
+      'INSERT INTO course_lessons ' +
+      '(course_id, class_id, lesson_name, lesson_type, weightage, max_marks, description, due_date) ' +
+      'VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     
     db.query(insertSql, [
       courseId, 
@@ -178,7 +173,7 @@ router.put('/lessons/:lessonId', (req, res) => {
       const otherLessonsTotal = weightageResults[0]?.total_weightage || 0;
       if (otherLessonsTotal + parseFloat(weightage) > 100) {
         return res.status(400).json({ 
-          message: `Total weightage would exceed 100%. Other lessons total: ${otherLessonsTotal}%` 
+          message: 'Total weightage would exceed 100%. Other lessons total: ' + otherLessonsTotal + '%'
         });
       }
       
@@ -280,11 +275,15 @@ router.get('/lessons/:lessonId/marks', (req, res) => {
 router.get('/lessons/:lessonId/students', (req, res) => {
   const { lessonId } = req.params;
   
-  const sql = `
+  const { batch } = req.query;
+  
+  let sql = `
     SELECT 
       u.admission_number,
       u.name as student_name,
       u.email,
+      u.batch,
+      u.created_at,
       lm.marks_obtained,
       lm.grade,
       lm.remarks,
@@ -299,11 +298,18 @@ router.get('/lessons/:lessonId/students', (req, res) => {
     INNER JOIN users u ON sc.admission_number = u.admission_number
     LEFT JOIN lesson_marks lm ON cl.lesson_id = lm.lesson_id 
       AND u.admission_number = lm.admission_number
-    WHERE cl.lesson_id = ?
-    ORDER BY u.name
-  `;
+    WHERE cl.lesson_id = ?`;
+
+  const params = [lessonId];
+
+  if (batch) {
+    sql += ` AND u.batch = ?`;
+    params.push(batch);
+  }
+
+  sql += ' ORDER BY u.name';
   
-  db.query(sql, [lessonId], (err, results) => {
+  db.query(sql, params, (err, results) => {
     if (err) {
       console.error('Error fetching lesson students:', err);
       return res.status(500).json({ message: 'Database error' });
@@ -338,7 +344,7 @@ router.post('/lessons/:lessonId/marks', (req, res) => {
     
     if (parseFloat(marks_obtained) < 0 || parseFloat(marks_obtained) > lesson.max_marks) {
       return res.status(400).json({ 
-        message: `Marks must be between 0 and ${lesson.max_marks}` 
+        message: 'Marks must be between 0 and ' + lesson.max_marks
       });
     }
     
@@ -360,15 +366,14 @@ router.post('/lessons/:lessonId/marks', (req, res) => {
       else calculatedGrade = 'F';
     }
     
-    const marksSql = `
-      INSERT INTO lesson_marks (admission_number, lesson_id, marks_obtained, grade, remarks)
-      VALUES (?, ?, ?, ?, ?)
-      ON DUPLICATE KEY UPDATE
-        marks_obtained = VALUES(marks_obtained),
-        grade = VALUES(grade),
-        remarks = VALUES(remarks),
-        updated_at = CURRENT_TIMESTAMP
-    `;
+    const marksSql = 
+      'INSERT INTO lesson_marks (admission_number, lesson_id, marks_obtained, grade, remarks) ' +
+      'VALUES (?, ?, ?, ?, ?) ' +
+      'ON DUPLICATE KEY UPDATE ' +
+      'marks_obtained = VALUES(marks_obtained), ' +
+      'grade = VALUES(grade), ' +
+      'remarks = VALUES(remarks), ' +
+      'updated_at = CURRENT_TIMESTAMP';
     
     db.query(marksSql, [
       admission_number,
@@ -464,23 +469,22 @@ router.get('/students/marks/summary', (req, res) => {
     return res.status(400).json({ message: 'Admission number is required' });
   }
 
-  const sql = `
-    SELECT 
-      lm.mark_id,
-      c.course_name,
-      cl.lesson_name,
-      cc.class_name,
-      lm.marks_obtained,
-      cl.max_marks as total_marks,
-      (lm.marks_obtained / cl.max_marks * 100) as percentage,
-      lm.grade
-    FROM lesson_marks lm
-    JOIN course_lessons cl ON lm.lesson_id = cl.lesson_id
-    JOIN courses c ON cl.course_id = c.course_id
-    LEFT JOIN course_classes cc ON cl.class_id = cc.class_id
-    WHERE lm.admission_number = ?
-    ORDER BY c.course_name, cl.lesson_name
-  `;
+  const sql = 
+    'SELECT ' +
+    '  lm.mark_id, ' +
+    '  c.course_name, ' +
+    '  cl.lesson_name, ' +
+    '  cc.class_name, ' +
+    '  lm.marks_obtained, ' +
+    '  cl.max_marks as total_marks, ' +
+    '  (lm.marks_obtained / cl.max_marks * 100) as percentage, ' +
+    '  lm.grade ' +
+    'FROM lesson_marks lm ' +
+    'JOIN course_lessons cl ON lm.lesson_id = cl.lesson_id ' +
+    'JOIN courses c ON cl.course_id = c.course_id ' +
+    'LEFT JOIN course_classes cc ON cl.class_id = cc.class_id ' +
+    'WHERE lm.admission_number = ? ' +
+    'ORDER BY c.course_name, cl.lesson_name';
 
   db.query(sql, [admission_number], (err, results) => {
     if (err) {
@@ -496,40 +500,46 @@ router.get('/students/marks/summary', (req, res) => {
 // Get final grades for a course
 router.get('/courses/:courseId/final-grades', (req, res) => {
   const { courseId } = req.params;
-  const { classId } = req.query;
+  const { classId, batch } = req.query;
   
-  let sql = `
-    SELECT 
-      cfg.*,
-      u.name as student_name,
-      c.course_name,
-      CASE 
-        WHEN cfg.class_id IS NOT NULL THEN cc.class_name
-        ELSE 'All Classes'
-      END as class_name,
-      scp.completed_lessons,
-      scp.total_lessons,
-      scp.completion_percentage
-    FROM course_final_grades cfg
-    LEFT JOIN users u ON cfg.admission_number = u.admission_number
-    LEFT JOIN courses c ON cfg.course_id = c.course_id
-    LEFT JOIN course_classes cc ON cfg.class_id = cc.class_id
-    LEFT JOIN student_course_progress scp ON cfg.admission_number = scp.admission_number 
-      AND cfg.course_id = scp.course_id 
-      AND (cfg.class_id = scp.class_id OR (cfg.class_id IS NULL AND scp.class_id IS NULL))
-    WHERE cfg.course_id = ?
-  `;
+  let sql = 
+    'SELECT ' +
+    '  cfg.*, ' +
+    '  u.name as student_name, ' +
+    '  u.batch, ' +
+    '  u.created_at, ' +
+    '  c.course_name, ' +
+    '  CASE ' +
+    '    WHEN cfg.class_id IS NOT NULL THEN cc.class_name ' +
+    '    ELSE \'All Classes\' ' +
+    '  END as class_name, ' +
+    '  scp.completed_lessons, ' +
+    '  scp.total_lessons, ' +
+    '  scp.completion_percentage ' +
+    'FROM course_final_grades cfg ' +
+    'LEFT JOIN users u ON cfg.admission_number = u.admission_number ' +
+    'LEFT JOIN courses c ON cfg.course_id = c.course_id ' +
+    'LEFT JOIN course_classes cc ON cfg.class_id = cc.class_id ' +
+    'LEFT JOIN student_course_progress scp ON cfg.admission_number = scp.admission_number ' +
+    '  AND cfg.course_id = scp.course_id ' +
+    '  AND (cfg.class_id = scp.class_id OR (cfg.class_id IS NULL AND scp.class_id IS NULL)) ' +
+    'WHERE cfg.course_id = ?';
   
   const params = [courseId];
   
   if (classId && classId !== 'null' && classId !== '') {
-    sql += ` AND cfg.class_id = ?`;
+    sql += ' AND cfg.class_id = ?';
     params.push(classId);
   } else if (classId === '' || classId === 'null') {
-    sql += ` AND cfg.class_id IS NULL`;
+    sql += ' AND cfg.class_id IS NULL';
+  }
+
+  if (batch) {
+    sql += ' AND u.batch = ?';
+    params.push(batch);
   }
   
-  sql += ` ORDER BY u.name`;
+  sql += ' ORDER BY u.created_at DESC, u.name';
   
   db.query(sql, params, (err, results) => {
     if (err) {
@@ -548,33 +558,31 @@ router.get('/students/:admissionNumber/courses/:courseId/progress', (req, res) =
   const processedClassId = (classId && classId !== 'null' && classId !== '') ? classId : null;
   
   // Get lesson marks
-  const lessonsSql = `
-    SELECT 
-      cl.*,
-      lm.marks_obtained,
-      lm.grade as lesson_grade,
-      lm.remarks,
-      lm.marked_at,
-      CASE WHEN lm.marks_obtained IS NOT NULL THEN 
-        (lm.marks_obtained / cl.max_marks * 100)
-      ELSE NULL END as percentage,
-      CASE WHEN lm.marks_obtained IS NOT NULL THEN 
-        (lm.marks_obtained / cl.max_marks * cl.weightage)
-      ELSE 0 END as weighted_points
-    FROM course_lessons cl
-    LEFT JOIN lesson_marks lm ON cl.lesson_id = lm.lesson_id 
-      AND lm.admission_number = ?
-    WHERE cl.course_id = ? 
-      AND (cl.class_id = ? OR (cl.class_id IS NULL AND ? IS NULL))
-    ORDER BY cl.due_date ASC, cl.lesson_name
-  `;
+  const lessonsSql = 
+    'SELECT ' +
+    '  cl.*, ' +
+    '  lm.marks_obtained, ' +
+    '  lm.grade as lesson_grade, ' +
+    '  lm.remarks, ' +
+    '  lm.marked_at, ' +
+    '  CASE WHEN lm.marks_obtained IS NOT NULL THEN ' +
+    '    (lm.marks_obtained / cl.max_marks * 100) ' +
+    '  ELSE NULL END as percentage, ' +
+    '  CASE WHEN lm.marks_obtained IS NOT NULL THEN ' +
+    '    (lm.marks_obtained / cl.max_marks * cl.weightage) ' +
+    '  ELSE 0 END as weighted_points ' +
+    'FROM course_lessons cl ' +
+    'LEFT JOIN lesson_marks lm ON cl.lesson_id = lm.lesson_id ' +
+    '  AND lm.admission_number = ? ' +
+    'WHERE cl.course_id = ? ' +
+    '  AND (cl.class_id = ? OR (cl.class_id IS NULL AND ? IS NULL)) ' +
+    'ORDER BY cl.due_date ASC, cl.lesson_name';
   
   // Get final grade
-  const finalGradeSql = `
-    SELECT * FROM course_final_grades 
-    WHERE admission_number = ? AND course_id = ? 
-      AND (class_id = ? OR (class_id IS NULL AND ? IS NULL))
-  `;
+  const finalGradeSql = 
+    'SELECT * FROM course_final_grades ' +
+    'WHERE admission_number = ? AND course_id = ? ' +
+    '  AND (class_id = ? OR (class_id IS NULL AND ? IS NULL))';
   
   db.query(lessonsSql, [
     admissionNumber, courseId, processedClassId, processedClassId
@@ -614,12 +622,11 @@ router.post('/courses/:courseId/recalculate-grades', (req, res) => {
   const processedClassId = (classId && classId !== 'null' && classId !== '') ? classId : null;
   
   // Get all students in the course
-  const studentsSql = `
-    SELECT DISTINCT sc.admission_number 
-    FROM student_courses sc 
-    WHERE sc.course_id = ? 
-      AND (sc.class_id = ? OR (? IS NULL))
-  `;
+  const studentsSql = 
+    'SELECT DISTINCT sc.admission_number ' +
+    'FROM student_courses sc ' +
+    'WHERE sc.course_id = ? ' +
+    '  AND (sc.class_id = ? OR (? IS NULL))';
   
   db.query(studentsSql, [courseId, processedClassId, processedClassId], (err, students) => {
     if (err) {
@@ -648,13 +655,13 @@ router.post('/courses/:courseId/recalculate-grades', (req, res) => {
         completed++;
         
         if (err) {
-          console.error(`Error recalculating grade for ${student.admission_number}:`, err);
+          console.error('Error recalculating grade for ' + student.admission_number + ':', err);
         }
         
         if (completed === total) {
           res.json({ 
             success: true, 
-            message: `Recalculated grades for ${total} students` 
+            message: 'Recalculated grades for ' + total + ' students'
           });
         }
       });
@@ -665,64 +672,68 @@ router.post('/courses/:courseId/recalculate-grades', (req, res) => {
 // Get course statistics including lesson-wise performance
 router.get('/courses/:courseId/statistics', (req, res) => {
   const { courseId } = req.params;
-  const { classId } = req.query;
+  const { classId, batch } = req.query;
   
   const processedClassId = (classId && classId !== 'null' && classId !== '') ? classId : null;
+  const batchFilter = batch ? " AND u.batch = '" + batch + "'" : '';
   
   // Overall course statistics
-  const overallSql = `
-    SELECT 
-      COUNT(DISTINCT cfg.admission_number) as total_students,
-      AVG(cfg.final_percentage) as overall_avg,
-      MAX(cfg.final_percentage) as overall_max,
-      MIN(cfg.final_percentage) as overall_min,
-      AVG(cfg.gpa_points) as avg_gpa,
-      COUNT(CASE WHEN cfg.final_percentage >= 65 THEN 1 END) as passed_count,
-      COUNT(CASE WHEN cfg.final_percentage < 65 THEN 1 END) as failed_count
-    FROM course_final_grades cfg
-    WHERE cfg.course_id = ?
-      AND (cfg.class_id = ? OR (cfg.class_id IS NULL AND ? IS NULL))
-  `;
+  const overallSql = 
+    'SELECT ' +
+    '  COUNT(DISTINCT cfg.admission_number) as total_students, ' +
+    '  AVG(cfg.final_percentage) as overall_avg, ' +
+    '  MAX(cfg.final_percentage) as overall_max, ' +
+    '  MIN(cfg.final_percentage) as overall_min, ' +
+    '  AVG(cfg.gpa_points) as avg_gpa, ' +
+    '  COUNT(CASE WHEN cfg.final_percentage >= 65 THEN 1 END) as passed_count, ' +
+    '  COUNT(CASE WHEN cfg.final_percentage < 65 THEN 1 END) as failed_count ' +
+    'FROM course_final_grades cfg ' +
+    'INNER JOIN users u ON cfg.admission_number = u.admission_number ' +
+    'WHERE cfg.course_id = ? ' +
+    '  AND (cfg.class_id = ? OR (cfg.class_id IS NULL AND ? IS NULL)) ' +
+    batchFilter;
   
   // Grade distribution
-  const gradeDistributionSql = `
-    SELECT 
-      cfg.final_grade,
-      COUNT(*) as count
-    FROM course_final_grades cfg
-    WHERE cfg.course_id = ?
-      AND (cfg.class_id = ? OR (cfg.class_id IS NULL AND ? IS NULL))
-    GROUP BY cfg.final_grade
-    ORDER BY 
-      CASE cfg.final_grade
-        WHEN 'A+' THEN 1 WHEN 'A' THEN 2 WHEN 'A-' THEN 3
-        WHEN 'B+' THEN 4 WHEN 'B' THEN 5 WHEN 'B-' THEN 6
-        WHEN 'C+' THEN 7 WHEN 'C' THEN 8 WHEN 'C-' THEN 9
-        WHEN 'D+' THEN 10 WHEN 'D' THEN 11 WHEN 'F' THEN 12
-        ELSE 13
-      END
-  `;
+  const gradeDistributionSql = 
+    'SELECT ' +
+    '  cfg.final_grade, ' +
+    '  COUNT(*) as count ' +
+    'FROM course_final_grades cfg ' +
+    'INNER JOIN users u ON cfg.admission_number = u.admission_number ' +
+    'WHERE cfg.course_id = ? ' +
+    '  AND (cfg.class_id = ? OR (cfg.class_id IS NULL AND ? IS NULL)) ' +
+    batchFilter + ' ' +
+    'GROUP BY cfg.final_grade ' +
+    'ORDER BY ' +
+    '  CASE cfg.final_grade ' +
+    "    WHEN 'A+' THEN 1 WHEN 'A' THEN 2 WHEN 'A-' THEN 3 " +
+    "    WHEN 'B+' THEN 4 WHEN 'B' THEN 5 WHEN 'B-' THEN 6 " +
+    "    WHEN 'C+' THEN 7 WHEN 'C' THEN 8 WHEN 'C-' THEN 9 " +
+    "    WHEN 'D+' THEN 10 WHEN 'D' THEN 11 WHEN 'F' THEN 12 " +
+    '    ELSE 13 ' +
+    '  END';
   
   // Lesson-wise statistics
-  const lessonStatsSql = `
-    SELECT 
-      cl.lesson_id,
-      cl.lesson_name,
-      cl.lesson_type,
-      cl.weightage,
-      cl.max_marks,
-      COUNT(lm.mark_id) as submissions,
-      COALESCE(AVG(lm.marks_obtained / cl.max_marks * 100), 0) as avg_percentage,
-      COALESCE(MAX(lm.marks_obtained / cl.max_marks * 100), 0) as max_percentage,
-      COALESCE(MIN(lm.marks_obtained / cl.max_marks * 100), 0) as min_percentage,
-      COUNT(CASE WHEN lm.marks_obtained / cl.max_marks >= 0.65 THEN 1 END) as passed_submissions
-    FROM course_lessons cl
-    LEFT JOIN lesson_marks lm ON cl.lesson_id = lm.lesson_id
-    WHERE cl.course_id = ?
-      AND (cl.class_id = ? OR (cl.class_id IS NULL AND ? IS NULL))
-    GROUP BY cl.lesson_id
-    ORDER BY cl.due_date ASC, cl.lesson_name
-  `;
+  const lessonStatsSql = 
+    'SELECT ' +
+    '  cl.lesson_id, ' +
+    '  cl.lesson_name, ' +
+    '  cl.lesson_type, ' +
+    '  cl.weightage, ' +
+    '  cl.max_marks, ' +
+    '  COUNT(lm.mark_id) as submissions, ' +
+    '  COALESCE(AVG(lm.marks_obtained / cl.max_marks * 100), 0) as avg_percentage, ' +
+    '  COALESCE(MAX(lm.marks_obtained / cl.max_marks * 100), 0) as max_percentage, ' +
+    '  COALESCE(MIN(lm.marks_obtained / cl.max_marks * 100), 0) as min_percentage, ' +
+    '  COUNT(CASE WHEN lm.marks_obtained / cl.max_marks >= 0.65 THEN 1 END) as passed_submissions ' +
+    'FROM course_lessons cl ' +
+    'LEFT JOIN lesson_marks lm ON cl.lesson_id = lm.lesson_id ' +
+    'LEFT JOIN users u ON lm.admission_number = u.admission_number ' +
+    'WHERE cl.course_id = ? ' +
+    '  AND (cl.class_id = ? OR (cl.class_id IS NULL AND ? IS NULL)) ' +
+    (batchFilter ? batchFilter : '') + ' ' +
+    'GROUP BY cl.lesson_id ' +
+    'ORDER BY cl.due_date ASC, cl.lesson_name';
   
   const params = [courseId, processedClassId, processedClassId];
   
@@ -771,12 +782,11 @@ router.get('/courses/:courseId/statistics', (req, res) => {
 
 // Get all students with their basic info (unchanged)
 router.get('/students', (req, res) => {
-  const sql = `
-    SELECT DISTINCT u.uid, u.admission_number, u.name, u.batch, u.email
-    FROM users u
-    WHERE u.role = 'student'
-    ORDER BY u.name
-  `;
+  const sql = 
+    'SELECT DISTINCT u.uid, u.admission_number, u.name, u.batch, u.email ' +
+    'FROM users u ' +
+    "WHERE u.role = 'student' " +
+    'ORDER BY u.name';
   
   db.query(sql, (err, results) => {
     if (err) {
@@ -789,12 +799,16 @@ router.get('/students', (req, res) => {
 
 // Legacy route - redirects to final grades
 router.get('/course/:courseId', (req, res) => {
-  res.redirect(`/api/marks/courses/${req.params.courseId}/final-grades${req.url.includes('?') ? '?' + req.url.split('?')[1] : ''}`);
+  const redirectUrl = '/api/marks/courses/' + req.params.courseId + '/final-grades' + 
+                     (req.url.includes('?') ? '?' + req.url.split('?')[1] : '');
+  res.redirect(redirectUrl);
 });
 
 // Legacy stats route
 router.get('/stats/course/:courseId', (req, res) => {
-  res.redirect(`/api/marks/courses/${req.params.courseId}/statistics${req.url.includes('?') ? '?' + req.url.split('?')[1] : ''}`);
+  const redirectUrl = '/api/marks/courses/' + req.params.courseId + '/statistics' + 
+                     (req.url.includes('?') ? '?' + req.url.split('?')[1] : '');
+  res.redirect(redirectUrl);
 });
 
 module.exports = router;
