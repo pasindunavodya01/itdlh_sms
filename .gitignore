@@ -17,3 +17,4 @@ build/
 # Firebase
 server/firebase/serviceAccountKey.json
 
+.vscode
