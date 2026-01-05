@@ -28,7 +28,7 @@ export default function ManagePayments() {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/students/all');
+      const response = await axios.get('http://itdlhsms-production.up.railway.app/api/students/all');
       setStudents(response.data.students);
     } catch (err) {
       console.error('Error fetching students:', err);
@@ -38,7 +38,7 @@ export default function ManagePayments() {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/courses');
+      const response = await axios.get('http://itdlhsms-production.up.railway.app/api/courses');
       setCourses(response.data);
     } catch (err) {
       console.error('Error fetching courses:', err);
@@ -48,7 +48,7 @@ export default function ManagePayments() {
 
   const fetchStudentCourses = async (admissionNumber) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/students/courses/${admissionNumber}`);
+      const res = await axios.get(`http://itdlhsms-production.up.railway.app/api/students/courses/${admissionNumber}`);
       setStudentCourses(res.data.courses);
     } catch (err) {
       console.error('Error fetching student courses:', err);
@@ -59,7 +59,7 @@ export default function ManagePayments() {
   const fetchCurrentPayment = useCallback(async () => {
     if (!selectedStudent || !selectedCourse) return;
     try {
-      const response = await axios.get(`http://localhost:5000/api/payments/current/${selectedStudent}/${selectedCourse}`);
+      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/payments/current/${selectedStudent}/${selectedCourse}`);
       if (response.data.payment) {
         setCurrentPayment(response.data.payment);
       } else {
@@ -90,7 +90,7 @@ export default function ManagePayments() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/payments/add-for-student', {
+      await axios.post('http://itdlhsms-production.up.railway.app/api/payments/add-for-student', {
         admission_number: selectedStudent,
         course_id: selectedCourse,
         amount_paid: parseFloat(amountPaid),

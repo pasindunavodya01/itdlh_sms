@@ -23,7 +23,7 @@ export default function AdminRegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/users/register", form);
+      await axios.post("http://itdlhsms-production.up.railway.app/api/users/register", form);
       alert("User registered successfully!");
       setForm({ ...form, password: "" });
     } catch (error) {

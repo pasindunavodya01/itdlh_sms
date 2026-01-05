@@ -15,11 +15,11 @@ const CreateSession = ({ onSessionCreated, onClose }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/courses')
+    axios.get('http://itdlhsms-production.up.railway.app/api/courses')
       .then(res => setCourses(res.data))
       .catch(err => console.error(err));
 
-    axios.get('http://localhost:5000/api/attendance/batches')
+    axios.get('http://itdlhsms-production.up.railway.app/api/attendance/batches')
       .then(res => setBatches(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -28,7 +28,7 @@ const CreateSession = ({ onSessionCreated, onClose }) => {
 useEffect(() => {
   if (formData.course_id) {
     // Fetch classes for the selected course from student_courses table
-    axios.get(`http://localhost:5000/api/courses/${formData.course_id}/classes`)
+    axios.get(`http://itdlhsms-production.up.railway.app/api/courses/${formData.course_id}/classes`)
       .then(res => setClasses(res.data))
       .catch(err => console.error('Error fetching classes:', err));
   } else {
@@ -60,7 +60,7 @@ const handleSubmit = async e => {
       ...formData,
       class_id: formData.class_id || null // Ensure class_id is passed even if empty
     };
-    const res = await axios.post('http://localhost:5000/api/attendance/session', payload);
+    const res = await axios.post('http://itdlhsms-production.up.railway.app/api/attendance/session', payload);
     onSessionCreated(res.data);
     setFormData({ batch: '', course_id: '', class_id: '', date: '', topic: '' });
     alert('Session created successfully!');

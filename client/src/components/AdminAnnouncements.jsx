@@ -20,7 +20,7 @@ export default function AdminAnnouncements() {
 
   const fetchAnnouncements = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/announcements');
+      const response = await axios.get('http://itdlhsms-production.up.railway.app/api/announcements');
       setAnnouncements(response.data.announcements);
     } catch (error) {
       console.error('Error fetching announcements:', error);
@@ -30,7 +30,7 @@ export default function AdminAnnouncements() {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/students/all');
+      const response = await axios.get('http://itdlhsms-production.up.railway.app/api/students/all');
       setStudents(response.data.students);
     } catch (error) {
       console.error('Error fetching students:', error);
@@ -51,10 +51,10 @@ export default function AdminAnnouncements() {
       };
 
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/announcements/${editingId}`, data);
+        await axios.put(`http://itdlhsms-production.up.railway.app/api/announcements/${editingId}`, data);
         setStatusMessage('Announcement updated successfully');
       } else {
-        await axios.post('http://localhost:5000/api/announcements', data);
+        await axios.post('http://itdlhsms-production.up.railway.app/api/announcements', data);
         setStatusMessage('Announcement created successfully');
       }
 
@@ -86,7 +86,7 @@ export default function AdminAnnouncements() {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this announcement?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/announcements/${id}`);
+        await axios.delete(`http://itdlhsms-production.up.railway.app/api/announcements/${id}`);
         setStatusMessage('Announcement deleted successfully');
         fetchAnnouncements();
       } catch (error) {

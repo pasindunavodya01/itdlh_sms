@@ -10,7 +10,7 @@ const CourseSelectionForm = ({ prev, next, formData }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/courses");
+        const res = await axios.get("http://itdlhsms-production.up.railway.app/api/courses");
         setCourses(res.data);
       } catch (err) {
         console.error("Failed to fetch courses:", err);

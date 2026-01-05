@@ -30,7 +30,7 @@ export default function StudentAnnouncements() {
         } else {
           // Fallback: fetch from API
           const studentResponse = await axios.get(
-            `http://localhost:5000/api/students/profile/${user.uid}`
+            `http://itdlhsms-production.up.railway.app/api/students/profile/${user.uid}`
           );
 
           if (!studentResponse.data) {
@@ -49,7 +49,7 @@ export default function StudentAnnouncements() {
         }
 
         // Fetch announcements for this student
-        const response = await axios.get(`http://localhost:5000/api/announcements`, {
+        const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/announcements`, {
           params: { studentId: studentId }
         });
 
@@ -79,7 +79,7 @@ export default function StudentAnnouncements() {
         if (!user) return;
 
         const studentResponse = await axios.get(
-          `http://localhost:5000/api/students/profile/${user.uid}`
+          `http://itdlhsms-production.up.railway.app/api/students/profile/${user.uid}`
         );
         studentId = studentResponse.data.student?.id || studentResponse.data.id;
       }
@@ -89,7 +89,7 @@ export default function StudentAnnouncements() {
         return;
       }
 
-      await axios.post(`http://localhost:5000/api/announcements/${announcementId}/read`, {
+      await axios.post(`http://itdlhsms-production.up.railway.app/api/announcements/${announcementId}/read`, {
         studentId: studentId
       });
 

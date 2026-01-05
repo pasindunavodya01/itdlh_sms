@@ -31,14 +31,14 @@ export default function StudentDashboard() {
         }
 
         const response = await axios.get(
-          `http://localhost:5000/api/students/profile/${user.uid}`
+          `http://itdlhsms-production.up.railway.app/api/students/profile/${user.uid}`
         );
         setStudentData(response.data.student);
         setCourses(response.data.courses);
         setPayments(response.data.payments);
 
         const requestsResponse = await axios.get(
-          `http://localhost:5000/api/students/my-requests/${user.uid}`
+          `http://itdlhsms-production.up.railway.app/api/students/my-requests/${user.uid}`
         );
         setUpdateRequests(requestsResponse.data.requests);
 
@@ -74,7 +74,7 @@ export default function StudentDashboard() {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/students/request-update/${studentData.uid}`,
+        `http://itdlhsms-production.up.railway.app/api/students/request-update/${studentData.uid}`,
         requestData
       );
       setMessage("Update request submitted successfully!");

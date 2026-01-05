@@ -40,7 +40,7 @@ const ExamManagement = () => {
   const fetchCourses = async () => {
     try {
       setInitialLoading(true);
-      const response = await axios.get('http://localhost:5000/api/courses');
+      const response = await axios.get('http://itdlhsms-production.up.railway.app/api/courses');
       setCourses(response.data?.courses || []);
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -53,7 +53,7 @@ const ExamManagement = () => {
   const fetchClasses = async () => {
     if (!selectedCourse) return;
     try {
-      const response = await axios.get(`http://localhost:5000/api/attendance/courses/${selectedCourse}/classes`);
+      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/attendance/courses/${selectedCourse}/classes`);
       setClasses(response.data || []);
     } catch (error) {
       console.error('Error fetching classes:', error);
@@ -66,7 +66,7 @@ const ExamManagement = () => {
     setLoading(true);
     try {
       const params = selectedClass ? `?classId=${selectedClass}` : '';
-      const response = await axios.get(`http://localhost:5000/api/eligibility/course/${selectedCourse}${params}`);
+      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/eligibility/course/${selectedCourse}${params}`);
       setEligibilityData(response.data);
     } catch (error) {
       console.error('Error fetching eligibility:', error);
@@ -81,7 +81,7 @@ const ExamManagement = () => {
     setLoading(true);
     try {
       const params = selectedClass ? `?classId=${selectedClass}` : '';
-      const response = await axios.get(`http://localhost:5000/api/marks/course/${selectedCourse}${params}`);
+      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/marks/course/${selectedCourse}${params}`);
       setMarksData(response.data?.marks || []);
     } catch (error) {
       console.error('Error fetching marks:', error);
@@ -95,7 +95,7 @@ const ExamManagement = () => {
     if (!selectedCourse) return;
     try {
       const params = selectedClass ? `?classId=${selectedClass}` : '';
-      const response = await axios.get(`http://localhost:5000/api/marks/stats/course/${selectedCourse}${params}`);
+      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/marks/stats/course/${selectedCourse}${params}`);
       setStats(response.data);
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -174,10 +174,10 @@ const ExamManagement = () => {
 
     try {
       if (editingMark) {
-        await axios.put(`http://localhost:5000/api/marks/${editingMark.mark_id}`, markForm);
+        await axios.put(`http://itdlhsms-production.up.railway.app/api/marks/${editingMark.mark_id}`, markForm);
         alert('Marks updated successfully!');
       } else {
-        await axios.post('http://localhost:5000/api/marks', markForm);
+        await axios.post('http://itdlhsms-production.up.railway.app/api/marks', markForm);
         alert('Marks added successfully!');
       }
       setShowMarkForm(false);
@@ -195,7 +195,7 @@ const ExamManagement = () => {
     if (!window.confirm('Are you sure you want to delete this mark?')) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/marks/${markId}`);
+      await axios.delete(`http://itdlhsms-production.up.railway.app/api/marks/${markId}`);
       alert('Mark deleted successfully!');
       fetchMarks();
       fetchStats();

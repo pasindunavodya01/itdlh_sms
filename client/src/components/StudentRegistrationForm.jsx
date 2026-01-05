@@ -28,7 +28,7 @@ const StudentRegistrationForm = ({ next }) => {
     e.preventDefault();
     try {
       // Optional: Save student info immediately to backend
-      // const response = await axios.post('http://localhost:5000/api/students/register', formData);
+      // const response = await axios.post('http://itdlhsms-production.up.railway.app/api/students/register', formData);
       // console.log('Saved:', response.data);
 
       // Pass data to MultiStep wrapper to go to next step

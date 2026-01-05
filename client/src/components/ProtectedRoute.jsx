@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
         setUser(user);
         try {
           // Check user role
-          const response = await fetch(`http://localhost:5000/api/students/check-role/${user.uid}`);
+          const response = await fetch(`http://itdlhsms-production.up.railway.app/api/students/check-role/${user.uid}`);
           if (response.ok) {
             const data = await response.json();
             setUserRole(data.role);

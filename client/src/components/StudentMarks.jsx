@@ -21,7 +21,7 @@ export default function StudentMarks() {
         }
 
         const profileRes = await axios.get(
-          `http://localhost:5000/api/students/profile/${user.uid}`
+          `http://itdlhsms-production.up.railway.app/api/students/profile/${user.uid}`
         );
         const studentData = profileRes.data?.student;
         if (!studentData?.admission_number) {
@@ -32,7 +32,7 @@ export default function StudentMarks() {
         setStudent(studentData);
 
         const marksRes = await axios.get(
-          `http://localhost:5000/api/marks/students/marks/summary`,
+          `http://itdlhsms-production.up.railway.app/api/marks/students/marks/summary`,
           { params: { admission_number: studentData.admission_number } }
         );
         setMarks(marksRes.data?.marks || []);

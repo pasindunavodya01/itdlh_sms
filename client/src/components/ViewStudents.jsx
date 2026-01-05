@@ -20,7 +20,7 @@ export default function ViewStudents() {
   // Function to fetch students with notes
   const fetchStudentsWithNotes = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/students/with-notes');
+      const response = await axios.get('http://itdlhsms-production.up.railway.app/api/students/with-notes');
       setStudentsWithNotes(response.data.students || []);
       setShowNotesList(true);
     } catch (err) {
@@ -40,7 +40,7 @@ export default function ViewStudents() {
   const saveNote = async () => {
     try {
       await axios.put(
-        `http://localhost:5000/api/students/${selectedStudent.student.uid}/note`,
+        `http://itdlhsms-production.up.railway.app/api/students/${selectedStudent.student.uid}/note`,
         { special_note: noteValue }
       );
       alert('Note saved successfully');
@@ -79,7 +79,7 @@ export default function ViewStudents() {
 
   const fetchAllStudents = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/students/all');
+      const response = await axios.get('http://itdlhsms-production.up.railway.app/api/students/all');
       setStudents(response.data.students || []);
       setFilteredStudents(response.data.students || []);
       setLoading(false);
@@ -93,7 +93,7 @@ export default function ViewStudents() {
   const handleStudentClick = async (student) => {
     try {
       // Fetch detailed student information including courses and payments
-      const response = await axios.get(`http://localhost:5000/api/students/profile/${student.uid}`);
+      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/students/profile/${student.uid}`);
       
       // Ensure we have default empty arrays if properties are undefined
       const studentData = {
@@ -298,7 +298,7 @@ export default function ViewStudents() {
                       e.preventDefault();
                       try {
                         await axios.put(
-                          `http://localhost:5000/api/students/update/${selectedStudent.student.uid}`,
+                          `http://itdlhsms-production.up.railway.app/api/students/update/${selectedStudent.student.uid}`,
                           editForm
                         );
                         alert("Student updated successfully!");
@@ -510,7 +510,7 @@ export default function ViewStudents() {
               onChange={async (e) => {
                 const newClassId = e.target.value || null;
                 await axios.put(
-                  `http://localhost:5000/api/students/classes/${selectedStudent.student.uid}/${course.course_id}`,
+                  `http://itdlhsms-production.up.railway.app/api/students/classes/${selectedStudent.student.uid}/${course.course_id}`,
                   { class_id: newClassId }
                 );
                 alert("Class updated!");
