@@ -74,8 +74,13 @@ router.get("/check-role/:uid", (req, res) => {
   const adminSql = "SELECT * FROM admins WHERE uid = ?";
   db.query(adminSql, [uid], (err, adminResult) => {
     if (err) {
-      console.error("Error checking admin:", err);
-      return res.status(500).json({ message: "Database error" });
+      // Log full error for debugging
+      console.error("Error checking admin:", err && err.message ? err.message : err);
+      // In development return the DB error message to the client to aid debugging. In production keep it generic.
+      if (process.env.NODE_ENV === 'production') {
+        return res.status(500).json({ message: "Database error" });
+      }
+      return res.status(500).json({ message: "Database error", error: err.message || err });
     }
 
     console.log('Admin check result:', adminResult);
@@ -88,8 +93,11 @@ router.get("/check-role/:uid", (req, res) => {
     const studentSql = "SELECT * FROM users WHERE uid = ?";
     db.query(studentSql, [uid], (err, studentResult) => {
       if (err) {
-        console.error("Error checking student:", err);
-        return res.status(500).json({ message: "Database error" });
+        console.error("Error checking student:", err && err.message ? err.message : err);
+        if (process.env.NODE_ENV === 'production') {
+          return res.status(500).json({ message: "Database error" });
+        }
+        return res.status(500).json({ message: "Database error", error: err.message || err });
       }
 
       console.log('Student check result:', studentResult);

@@ -62,7 +62,7 @@ const LessonBasedExamManagement = () => {
   const fetchCourses = async () => {
     try {
       setInitialLoading(true);
-      const response = await axios.get('http://itdlhsms-production.up.railway.app/api/courses');
+      const response = await axios.get('http://localhost:5000/api/courses');
       setCourses(response.data?.courses || response.data || []);
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -74,7 +74,7 @@ const LessonBasedExamManagement = () => {
   const fetchClasses = async () => {
     if (!selectedCourse) return;
     try {
-      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/attendance/courses/${selectedCourse}/classes`);
+      const response = await axios.get(`http://localhost:5000/api/attendance/courses/${selectedCourse}/classes`);
       setClasses(response.data || []);
     } catch (error) {
       console.error('Error fetching classes:', error);
@@ -87,7 +87,7 @@ const LessonBasedExamManagement = () => {
     setLoading(true);
     try {
       const params = selectedClass ? `?classId=${selectedClass}` : '';
-      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/marks/courses/${selectedCourse}/lessons${params}`);
+      const response = await axios.get(`http://localhost:5000/api/marks/courses/${selectedCourse}/lessons${params}`);
       setLessons(response.data.lessons || []);
     } catch (error) {
       console.error('Error fetching lessons:', error);
@@ -101,7 +101,7 @@ const LessonBasedExamManagement = () => {
     if (!lessonId) return;
     setLoading(true);
     try {
-      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/marks/lessons/${lessonId}/students`);
+      const response = await axios.get(`http://localhost:5000/api/marks/lessons/${lessonId}/students`);
       setLessonStudents(response.data.students || []);
     } catch (error) {
       console.error('Error fetching lesson students:', error);
@@ -116,7 +116,7 @@ const LessonBasedExamManagement = () => {
     setLoading(true);
     try {
       const params = selectedClass ? `?classId=${selectedClass}` : '';
-      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/marks/courses/${selectedCourse}/final-grades${params}`);
+      const response = await axios.get(`http://localhost:5000/api/marks/courses/${selectedCourse}/final-grades${params}`);
       setFinalGrades(response.data.grades || []);
     } catch (error) {
       console.error('Error fetching final grades:', error);
@@ -130,7 +130,7 @@ const LessonBasedExamManagement = () => {
     if (!selectedCourse) return;
     try {
       const params = selectedClass ? `?classId=${selectedClass}` : '';
-      const response = await axios.get(`http://itdlhsms-production.up.railway.app/api/marks/courses/${selectedCourse}/statistics${params}`);
+      const response = await axios.get(`http://localhost:5000/api/marks/courses/${selectedCourse}/statistics${params}`);
       setStatistics(response.data);
     } catch (error) {
       console.error('Error fetching statistics:', error);
@@ -193,7 +193,7 @@ const LessonBasedExamManagement = () => {
       
       const method = editingLesson ? 'put' : 'post';
       
-      await axios[method](`http://itdlhsms-production.up.railway.app${endpoint}`, lessonForm);
+      await axios[method](`http://localhost:5000${endpoint}`, lessonForm);
       
       alert(editingLesson ? 'Lesson updated successfully!' : 'Lesson created successfully!');
       setShowLessonForm(false);
@@ -210,7 +210,7 @@ const LessonBasedExamManagement = () => {
     if (!window.confirm('Are you sure you want to delete this lesson? This action cannot be undone.')) return;
 
     try {
-      await axios.delete(`http://itdlhsms-production.up.railway.app/api/marks/lessons/${lesson.lesson_id}`);
+      await axios.delete(`http://localhost:5000/api/marks/lessons/${lesson.lesson_id}`);
       alert('Lesson deleted successfully!');
       fetchLessons();
       if (selectedLesson && selectedLesson.lesson_id === lesson.lesson_id) {
@@ -240,7 +240,7 @@ const LessonBasedExamManagement = () => {
 
     setLoading(true);
     try {
-      await axios.post(`http://itdlhsms-production.up.railway.app/api/marks/lessons/${selectedLesson.lesson_id}/marks`, markForm);
+      await axios.post(`http://localhost:5000/api/marks/lessons/${selectedLesson.lesson_id}/marks`, markForm);
       alert('Marks saved successfully!');
       setShowMarkForm(false);
       fetchLessonStudents(selectedLesson.lesson_id);
@@ -262,7 +262,7 @@ const LessonBasedExamManagement = () => {
     if (!window.confirm('Are you sure you want to delete this mark?')) return;
 
     try {
-      await axios.delete(`http://itdlhsms-production.up.railway.app/api/marks/lessons/${selectedLesson.lesson_id}/marks/${student.admission_number}`);
+      await axios.delete(`http://localhost:5000/api/marks/lessons/${selectedLesson.lesson_id}/marks/${student.admission_number}`);
       alert('Mark deleted successfully!');
       fetchLessonStudents(selectedLesson.lesson_id);
       
@@ -284,7 +284,7 @@ const LessonBasedExamManagement = () => {
     setLoading(true);
     try {
       const params = selectedClass ? `?classId=${selectedClass}` : '';
-      await axios.post(`http://itdlhsms-production.up.railway.app/api/marks/courses/${selectedCourse}/recalculate-grades${params}`);
+      await axios.post(`http://localhost:5000/api/marks/courses/${selectedCourse}/recalculate-grades${params}`);
       alert('Grades recalculated successfully!');
       fetchFinalGrades();
       fetchStatistics();
