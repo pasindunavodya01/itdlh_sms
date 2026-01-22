@@ -1,11 +1,11 @@
 {
-  "greeting": "Hello! Welcome to IT & Distance Learning Hub - Negombo. How can I assist you today?",
-  "institute_type": "Government Institute ",
-  "location": "ITDLH,Dalupotha, Negombo, Sri Lanka",
+  "greeting": "Hello! Welcome to IT & Distance Learning Hub - Negombo. How can I assist you today? 😊",
+  "institute_type": "Government Institute",
+  "location": "ITDLH, Dalupotha, Negombo, Sri Lanka",
   "website": "https://www.ITDLHNegombo.gov.lk",
   "socials": {
     "facebook": "https://www.facebook.com/ITDLHNegombo",
-    "instagram": "https://www.instagram.com/ITDLHNegombo ",
+    "instagram": "https://www.instagram.com/ITDLHNegombo",
     "linkedin": "https://www.linkedin.com/school/itdlh-negombo"
   },
   "facilities": [
@@ -14,142 +14,217 @@
     "Air-Conditioned Classrooms",
     "Security & CCTV Surveillance",
     "Wi-Fi for Students & Staff",
-    "Friendly Staff",
+    "Friendly & Supportive Staff",
     "Printing & Scanning Facilities",
-    "Clean and Well-Maintained Labs"
+    "Clean and Well-Maintained Labs",
+    "Modern Equipment & Software",
+    "Library & Resource Center"
   ],
   "scholarships": [
     "Merit-based scholarships for top performers",
-    "Need-based financial assistance"
+    "Need-based financial assistance for students from low-income families",
+    "Special discounts for early bird registrations"
   ],
   "courses": [
     {
       "name": "Certificate Course in Office Application",
       "price": 7000,
       "start_date": "2025-10-01",
-      "duration": "6 months ",
-      "eligibility": "Basic computer knowledge",
-      "description": "Learn essential office applications including Word, Excel, and PowerPoint.",
+      "duration": "6 months",
+      "eligibility": "Basic computer knowledge required",
+      "description": "Learn essential office applications including MS Word, Excel, PowerPoint, and Outlook. Perfect for beginners looking to improve their productivity skills.",
       "mode": "On-campus",
-      "intake_month": "October 2025"
+      "intake_month": "October 2025",
+      "outcomes": [
+        "Create professional documents and presentations",
+        "Manage spreadsheets and data analysis",
+        "Effective email communication"
+      ]
     },
     {
       "name": "Certificate in Photo Editing",
       "price": 8000,
       "start_date": "2025-10-01",
-      "duration": "6 months ",
-      "eligibility": "Basic computer knowledge",
-      "description": "Learn Adobe Photoshop and other tools for photo editing.",
+      "duration": "6 months",
+      "eligibility": "Basic computer knowledge required",
+      "description": "Master Adobe Photoshop and other industry-standard photo editing tools. Learn retouching, color correction, and creative design techniques.",
       "mode": "On-campus",
-      "intake_month": "October 2025"
+      "intake_month": "October 2025",
+      "outcomes": [
+        "Professional photo editing and retouching",
+        "Create graphics for social media",
+        "Image manipulation and enhancement"
+      ]
     },
     {
       "name": "Certificate in Web Designing",
       "price": 4000,
       "start_date": "2025-10-01",
       "duration": "1 year",
-      "eligibility": "Basic computer knowledge",
-      "description": "Learn HTML, CSS, and basic web design principles.",
+      "eligibility": "Basic computer knowledge required",
+      "description": "Learn HTML, CSS, JavaScript, and responsive web design principles. Build modern, professional websites from scratch.",
       "mode": "On-campus",
-      "intake_month": "October 2025"
+      "intake_month": "October 2025",
+      "outcomes": [
+        "Design and develop responsive websites",
+        "Understanding of web standards and best practices",
+        "Portfolio of web projects"
+      ]
     },
     {
       "name": "Certificate in Computerized Accounting for SME",
       "price": 8000,
       "start_date": "2025-10-01",
       "duration": "1 year",
-      "eligibility": "Basic accounting knowledge",
-      "description": "Learn computerized accounting using popular accounting software.",
+      "eligibility": "Basic accounting knowledge required",
+      "description": "Learn computerized accounting using popular software like QuickBooks and Tally. Ideal for small and medium enterprises.",
       "mode": "On-campus",
-      "intake_month": "October 2025"
+      "intake_month": "October 2025",
+      "outcomes": [
+        "Manage accounts using software",
+        "Generate financial reports",
+        "Inventory and payroll management"
+      ]
     },
     {
       "name": "Certificate in Python Programming",
       "price": 5000,
       "start_date": "2025-10-01",
-      "duration": "6 months ",
-      "eligibility": "Basic programming knowledge",
-      "description": "Learn Python programming for beginners.",
+      "duration": "6 months",
+      "eligibility": "Basic programming knowledge helpful but not required",
+      "description": "Learn Python programming from basics to intermediate level. Cover data structures, algorithms, and real-world applications.",
       "mode": "On-campus",
-      "intake_month": "October 2025"
+      "intake_month": "October 2025",
+      "outcomes": [
+        "Write Python programs independently",
+        "Problem-solving with code",
+        "Foundation for data science and automation"
+      ]
     },
     {
       "name": "Certificate in Computer Hardware",
       "price": 3000,
       "start_date": "2025-10-01",
       "duration": "1 year",
-      "eligibility": "Basic computer knowledge",
-      "description": "Learn hardware components, maintenance, and troubleshooting.",
+      "eligibility": "Basic computer knowledge required",
+      "description": "Learn computer hardware components, assembly, maintenance, and troubleshooting. Hands-on practical training included.",
       "mode": "On-campus",
-      "intake_month": "October 2025"
+      "intake_month": "October 2025",
+      "outcomes": [
+        "Assemble and repair computers",
+        "Diagnose hardware problems",
+        "Install and configure systems"
+      ]
     },
     {
       "name": "Advanced Certificate in Computer Application",
       "price": 10000,
       "start_date": "2025-10-01",
       "duration": "10 weeks",
-      "eligibility": "Basic computer knowledge",
-      "description": "Advanced skills in MS Office and other computer applications.",
+      "eligibility": "Basic computer knowledge required",
+      "description": "Advanced skills in MS Office Suite, database management, and business applications. Fast-track intensive program.",
       "mode": "On-campus",
-      "intake_month": "October 2025"
+      "intake_month": "October 2025",
+      "outcomes": [
+        "Advanced Excel and Access skills",
+        "Business process automation",
+        "Professional certification"
+      ]
     },
     {
       "name": "Certificate in Essential English Language Skills for Professionals",
       "price": 8000,
       "start_date": "2025-10-01",
-      "duration": "6 months ",
-      "eligibility": "Basic English proficiency",
-      "description": "Improve English communication skills for professional purposes.",
+      "duration": "6 months",
+      "eligibility": "Basic English proficiency required",
+      "description": "Improve English communication skills for professional workplace settings. Focus on speaking, writing, and business English.",
       "mode": "On-campus",
-      "intake_month": "October 2025"
-    },
-    {
-      "name": "Test course",
-      "price": 7000,
-      "start_date": "2025-10-01",
-      "duration": "4 months",
-      "eligibility": "Basic English proficiency",
-      "description": "Improve English communication skills for professional purposes.",
-      "mode": "On-campus",
-      "intake_month": "November"
+      "intake_month": "October 2025",
+      "outcomes": [
+        "Confident professional communication",
+        "Business writing skills",
+        "Interview and presentation skills"
+      ]
     }
   ],
   "lecturers": [
     {
       "name": "Ms. Gayana",
-      "course": "Computing"
+      "course": "Computing",
+      "qualification": "BSc in Computer Science",
+      "experience": "8+ years"
     },
     {
       "name": "Ms. Rohini",
-      "course": "English"
+      "course": "English",
+      "qualification": "MA in English Literature",
+      "experience": "10+ years"
     },
     {
       "name": "Ms. Manoji",
-      "course": "Computing"
+      "course": "Computing",
+      "qualification": "BSc in Information Technology",
+      "experience": "6+ years"
     },
     {
       "name": "Mr. Vijaya",
-      "course": "Computing"
+      "course": "Computing",
+      "qualification": "BSc in Software Engineering",
+      "experience": "12+ years"
     },
     {
       "name": "Ms. Rizna",
-      "course": "Computing"
+      "course": "Computing",
+      "qualification": "BSc in Computer Science",
+      "experience": "5+ years"
     }
   ],
   "contact": {
     "email": "info@moha.gov.lk",
     "phone": "+94 112 785 141",
-    "address": "ITDLH, Dalupotha, Negombo, Sri Lanka"
+    "address": "ITDLH, Dalupotha, Negombo, Sri Lanka",
+    "office_hours": "Monday to Friday: 8:30 AM - 4:30 PM",
+    "support_email": "support@itdlhnegombo.gov.lk"
   },
   "faqs": {
-    "contact": "You can reach us at info@moha.gov.lk or call +94 112 785 141.",
-    "payment methods": "We accept online payment, bank transfer, and cash payments at the institute.",
-    "certificate": "Upon completion, students will receive an official government-recognized certificate.",
-    "timings": "Courses are held on weekdays from 6 PM to 9 PM and weekends from 9 AM to 4 PM.",
-    "scholarships": "Merit-based and need-based scholarships are available for eligible students.",
-    "support": "Students can contact our support team via email or call for assistance.",
-    "admission process ": "You can apply online via the Admissions page or contact the admin for guidance."
+    "How can I contact you?": "You can reach us at info@moha.gov.lk or call +94 112 785 141. Our office hours are Monday to Friday, 8:30 AM - 4:30 PM.",
+    "What payment methods do you accept?": "We accept online payment, bank transfer, and cash payments at the institute. Installment options are available for selected courses.",
+    "Will I get a certificate?": "Yes! Upon successful completion, students will receive an official government-recognized certificate that is valid nationwide.",
+    "What are the class timings?": "Courses are held on weekdays from 6:00 PM to 9:00 PM and weekends from 9:00 AM to 4:00 PM. Some courses may have flexible schedules.",
+    "Are scholarships available?": "Yes! We offer merit-based scholarships for top performers and need-based financial assistance for eligible students. Early bird discounts are also available.",
+    "How can I get support?": "Students can contact our support team via email at support@itdlhnegombo.gov.lk or call our office during business hours for assistance.",
+    "How do I apply for admission?": "You can apply online through our website's Admissions page or visit our office in person. Contact our admin team for step-by-step guidance.",
+    "Do you offer online classes?": "Currently, our courses are primarily on-campus to ensure hands-on practical learning. However, we may offer hybrid options for selected courses.",
+    "Can I visit the institute before enrolling?": "Absolutely! We welcome prospective students to visit our campus. Please call ahead to schedule a tour and meet with our counselors.",
+    "What is the refund policy?": "Refunds are available within the first two weeks of course commencement, subject to a processing fee. Please contact administration for details.",
+    "Are there any prerequisites?": "Most courses require basic computer knowledge or basic English proficiency. Specific eligibility criteria are mentioned for each course.",
+    "Can working professionals join?": "Yes! Our evening and weekend classes are designed specifically for working professionals and students.",
+    "Is parking available?": "Yes, we have parking facilities available for students and visitors.",
+    "Do you provide job placement assistance?": "We provide career guidance and connect students with industry opportunities through our network of partners."
   },
-  "audience": "👥 Our courses are designed for:\n• Students after O/L\n• Students after A/L\n• Working Professionals",
-  "notes": "All courses follow government-approved curriculum and are recognized nationally."
+  "audience": "👥 Our courses are designed for:\n• Students after O/L or A/L\n• Working professionals seeking career advancement\n• Job seekers wanting to enhance employability\n• Entrepreneurs and small business owners\n• Anyone interested in upgrading IT and English skills",
+  "notes": "All courses follow government-approved curriculum and are recognized nationally. Our institute is committed to providing quality education with practical, hands-on training.",
+  "operating_hours": {
+    "weekdays": "8:30 AM - 9:00 PM",
+    "weekends": "9:00 AM - 4:00 PM",
+    "office": "Monday to Friday: 8:30 AM - 4:30 PM"
+  },
+  "admission_process": [
+    "Visit our website or office",
+    "Fill out the application form",
+    "Submit required documents (ID, certificates)",
+    "Pay the registration fee",
+    "Attend orientation session",
+    "Begin your course!"
+  ],
+  "why_choose_us": [
+    "Government-recognized institute with quality assurance",
+    "Experienced and qualified instructors",
+    "Modern facilities and equipment",
+    "Flexible class timings for working professionals",
+    "Affordable fees with scholarship opportunities",
+    "Hands-on practical training",
+    "Industry-relevant curriculum",
+    "Supportive learning environment"
+  ]
 }

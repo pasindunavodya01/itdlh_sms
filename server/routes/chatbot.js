@@ -47,7 +47,12 @@ const saveData = (data) => {
 
 // Define keyword mapping
 const RESPONSES = {
-  greeting: ["hi", "hello", "hey", "hii", "helloo", "good morning", "good afternoon", "good evening", "good night", "howdy"],
+  greeting: ["hi", "hello", "hey", "hii", "helloo", "good morning", "good afternoon", "good evening", "good night", "howdy", "greetings"],
+  thanks: ["thank", "thanks", "thankyou", "thank you", "thx", "appreciate", "appreciated", "grateful"],
+  goodbye: ["bye", "goodbye", "see you", "later", "good bye", "take care", "farewell", "catch you later"],
+  affirmative: ["yes", "yeah", "yep", "sure", "ok", "okay", "alright", "correct", "right", "yup"],
+  negative: ["no", "nope", "nah", "not really", "don't think so"],
+  help: ["help", "assist", "support", "guide", "confused", "don't understand", "what can you do"],
   courses: ["course", "courses", "coourses", "class", "classes", "program", "programs", "programme", "programmes", "subject", "subjects", "training", "trainings"],
   lecturers: ["lecturer", "lecturers", "teacher", "staff", "lecturrs", "professor", "instructor", "faculty", "trainer", "tutor", "mentor"],
   location: ["location", "where", "place", "address", "situated", "located", "found", "directions", "how to reach", "how to get"],
@@ -58,10 +63,16 @@ const RESPONSES = {
   start_date: ["start", "starts", "starting", "date", "dates", "begin", "beginning", "commence", "when does"],
   intake: ["intake", "admission month", "admission", "apply", "join", "enroll", "enrol", "registration", "register"],
   audience: ["who can join", "for whom", "eligibility group", "who is it for", "students", "professionals", "job seekers", "entrepreneurs"],
-eligibility: ["eligibility", "requirement", "requirements", "criteria", "qualifications", "needed", "prerequisite", "prerequisites", "who can"],
+  eligibility: ["eligibility", "requirement", "requirements", "criteria", "qualifications", "needed", "prerequisite", "prerequisites", "who can"],
   description: ["description", "about course", "course info", "course details", "what is", "purpose", "overview", "summary"],
-  about: ["about institute", "tell me about", "Why should I", "Choose", "what is this place", "information about", "what is this place"],
+  about: ["about institute", "tell me about", "why should i", "choose", "what is this place", "information about"],
   common: ["can you do", "what can you do", "who are you"],
+  facilities: ["facilities", "facility", "amenities", "infrastructure", "resources", "equipment", "lab", "classroom"],
+  scholarship: ["scholarship", "scholarships", "financial aid", "financial assistance", "funding", "grant"],
+  timings: ["timing", "timings", "schedule", "time table", "class hours", "when are classes"],
+  certificate: ["certificate", "certification", "degree", "diploma", "credential"],
+  payment: ["payment method", "how to pay", "payment options", "pay how"],
+  online: ["online", "distance", "remote", "virtual", "e-learning"],
 };
 
 // Chatbot message handler
@@ -72,21 +83,57 @@ router.post("/", (req, res) => {
 
     const data = loadData();
 
-    // 1️⃣ Check if it's ONLY a greeting (no other keywords)
+    // 1️⃣ Check for thanks/gratitude
+    const isThanks = RESPONSES.thanks.some(k => userMsg.includes(k));
+    if (isThanks) {
+      const thanksResponses = [
+        "You're welcome! Feel free to ask if you need anything else. 😊",
+        "Happy to help! Let me know if you have more questions.",
+        "My pleasure! Don't hesitate to ask if you need more information.",
+        "You're welcome! I'm here if you need anything else."
+      ];
+      return res.json({ 
+        reply: thanksResponses[Math.floor(Math.random() * thanksResponses.length)]
+      });
+    }
+
+    // 2️⃣ Check for goodbye
+    const isGoodbye = RESPONSES.goodbye.some(k => userMsg.includes(k));
+    if (isGoodbye) {
+      const goodbyeResponses = [
+        "Goodbye! Have a great day! 👋",
+        "See you later! Feel free to come back anytime.",
+        "Take care! We're here whenever you need us.",
+        "Bye! Best of luck with your learning journey!"
+      ];
+      return res.json({ 
+        reply: goodbyeResponses[Math.floor(Math.random() * goodbyeResponses.length)]
+      });
+    }
+
+    // 3️⃣ Check for help request
+    const isHelp = RESPONSES.help.some(k => userMsg.includes(k));
+    if (isHelp) {
+      return res.json({
+        reply: "I'm your ITDLH assistant! 🤖\n\n💡 I can help you with:\n• Course information & descriptions\n• Fees & payment methods\n• Duration & start dates\n• Eligibility requirements\n• Lecturers & staff\n• Location & contact details\n• Facilities & scholarships\n• Timings & schedules\n\nWhat would you like to know?"
+      });
+    }
+
+    // 4️⃣ Check if it's ONLY a greeting (no other keywords)
     const isGreeting = RESPONSES.greeting.some(k => {
       const words = userMsg.split(/\s+/);
       return words.length <= 3 && words.some(word => word === k || word.startsWith(k));
     });
     
     const hasOtherKeywords = Object.keys(RESPONSES)
-      .filter(k => k !== 'greeting')
+      .filter(k => !['greeting', 'thanks', 'goodbye', 'affirmative', 'negative', 'help'].includes(k))
       .some(category => RESPONSES[category].some(kw => userMsg.includes(kw)));
     
     if (isGreeting && !hasOtherKeywords) {
       return res.json({ reply: data.greeting });
     }
 
-    // 2️⃣ Fuzzy match course names
+    // 5️⃣ Fuzzy match course names
     let mentionedCourse = null;
     const courseNames = data.courses.map(c => c.name.toLowerCase());
     const courseMatch = stringSimilarity.findBestMatch(userMsg, courseNames);
@@ -94,9 +141,9 @@ router.post("/", (req, res) => {
       mentionedCourse = data.courses.find(c => c.name.toLowerCase() === courseMatch.bestMatch.target);
     }
 
-    // 3️⃣ Fuzzy match main keywords with priority and threshold
-    const MIN_MATCH = 0.5; // lowered threshold for better matching
-    const priorityKeys = ["location","contact","courses","lecturers","fees","duration","start_date","intake","eligibility","description","about","institute", "audience", "common"];
+    // 6️⃣ Fuzzy match main keywords with priority and threshold
+    const MIN_MATCH = 0.5;
+    const priorityKeys = ["location", "contact", "courses", "lecturers", "fees", "duration", "start_date", "intake", "eligibility", "description", "about", "institute", "audience", "common", "facilities", "scholarship", "timings", "certificate", "payment", "online"];
     let bestMatch = null;
     let bestRating = 0;
 
@@ -108,12 +155,13 @@ router.post("/", (req, res) => {
       }
     }
 
-    // 4️⃣ Generate response based on detected category
+    // 7️⃣ Generate response based on detected category
     if (bestMatch) {
       switch (bestMatch) {
         case "courses":
           return res.json({
             reply: "Here are our available courses:\n\n" + data.courses
+              .filter(c => c.name !== "Test course") // Filter out test course
               .map(
                 c => `📚 ${c.name}\n  • Fee: Rs.${c.price.toLocaleString()}\n  • Duration: ${c.duration}\n  • Starts: ${c.start_date}\n  • Intake: ${c.intake_month}`
               )
@@ -132,7 +180,7 @@ router.post("/", (req, res) => {
 
         case "institute":
           return res.json({ 
-            reply: `🏛️ ${data.institute_type}\n\nWebsite: ${data.website}\n\nWe are a government-recognized institute offering quality IT and English courses.` 
+            reply: `🏛️ ${data.institute_type}\n\n🌐 Website: ${data.website}\n\n📘 We are a government-recognized institute offering quality IT and English courses.` 
           });
 
         case "contact":
@@ -145,7 +193,10 @@ router.post("/", (req, res) => {
             return res.json({ reply: `💰 The fee for ${mentionedCourse.name} is Rs.${mentionedCourse.price.toLocaleString()}.` });
           } else {
             return res.json({ 
-              reply: "💰 Course Fees:\n\n" + data.courses.map(c => ` • ${c.name}: Rs.${c.price.toLocaleString()}`).join("\n") 
+              reply: "💰 Course Fees:\n\n" + data.courses
+                .filter(c => c.name !== "Test course")
+                .map(c => `• ${c.name}: Rs.${c.price.toLocaleString()}`)
+                .join("\n") 
             });
           }
 
@@ -154,7 +205,10 @@ router.post("/", (req, res) => {
             return res.json({ reply: `⏱️ ${mentionedCourse.name} runs for ${mentionedCourse.duration}.` });
           } else {
             return res.json({ 
-              reply: "⏱️ Course Durations:\n\n" + data.courses.map(c => `${c.name}: ${c.duration}`).join("\n") 
+              reply: "⏱️ Course Durations:\n\n" + data.courses
+                .filter(c => c.name !== "Test course")
+                .map(c => `• ${c.name}: ${c.duration}`)
+                .join("\n") 
             });
           }
 
@@ -163,25 +217,34 @@ router.post("/", (req, res) => {
             return res.json({ reply: `📅 ${mentionedCourse.name} starts on ${mentionedCourse.start_date}.` });
           } else {
             return res.json({ 
-              reply: "📅 Course Start Dates:\n\n" + data.courses.map(c => `${c.name}: ${c.start_date}`).join("\n") 
+              reply: "📅 Course Start Dates:\n\n" + data.courses
+                .filter(c => c.name !== "Test course")
+                .map(c => `• ${c.name}: ${c.start_date}`)
+                .join("\n") 
             });
           }
 
         case "intake":
-  if (mentionedCourse) {
-    return res.json({ reply: `📝 ${mentionedCourse.name} intake is in ${mentionedCourse.intake_month}.` });
-  } else {
-    return res.json({ 
-      reply: "📝 Course Intakes:\n\n " + data.courses.map(c => `• ${c.name}: ${c.intake_month}`).join("\n") 
-    });
-  }
+          if (mentionedCourse) {
+            return res.json({ reply: `📝 ${mentionedCourse.name} intake is in ${mentionedCourse.intake_month}.` });
+          } else {
+            return res.json({ 
+              reply: "📝 Course Intakes:\n\n" + data.courses
+                .filter(c => c.name !== "Test course")
+                .map(c => `• ${c.name}: ${c.intake_month}`)
+                .join("\n") 
+            });
+          }
 
         case "eligibility":
           if (mentionedCourse) {
             return res.json({ reply: `✅ ${mentionedCourse.name} eligibility: ${mentionedCourse.eligibility}` });
           } else {
             return res.json({ 
-              reply: "✅ Course Eligibility:\n\n" + data.courses.map(c => ` • ${c.name}: ${c.eligibility}`).join("\n") 
+              reply: "✅ Course Eligibility:\n\n" + data.courses
+                .filter(c => c.name !== "Test course")
+                .map(c => `• ${c.name}: ${c.eligibility}`)
+                .join("\n") 
             });
           }
 
@@ -194,21 +257,52 @@ router.post("/", (req, res) => {
             });
           }
 
-
-
         case "audience":
-          // Use the audience data from the JSON file
           return res.json({ reply: data.audience });
+
+        case "facilities":
+          return res.json({
+            reply: "🏫 Our Facilities:\n\n" + data.facilities.map(f => `• ${f}`).join("\n") + 
+                   "\n\nWe provide a modern, comfortable learning environment for all our students!"
+          });
+
+        case "scholarship":
+          return res.json({
+            reply: "🎓 Scholarship Opportunities:\n\n" + data.scholarships.map(s => `• ${s}`).join("\n") + 
+                   "\n\nFor more information, please contact our administration office."
+          });
+
+        case "timings":
+          return res.json({
+            reply: data.faqs.timings ? `🕐 Class Timings:\n\n${data.faqs.timings}` : 
+                   "🕐 For class timings, please contact our office at " + data.contact.phone
+          });
+
+        case "certificate":
+          return res.json({
+            reply: data.faqs.certificate ? `🎖️ ${data.faqs.certificate}` : 
+                   "🎖️ Students receive official certificates upon successful completion of their courses."
+          });
+
+        case "payment":
+          return res.json({
+            reply: data.faqs["payment methods"] ? `💳 Payment Methods:\n\n${data.faqs["payment methods"]}` : 
+                   "💳 For payment information, please contact our office."
+          });
+
+        case "online":
+          return res.json({
+            reply: "🌐 Our courses are primarily conducted on-campus to ensure hands-on learning and direct interaction with instructors.\n\nFor specific course modes, please check individual course details or contact us at " + data.contact.phone
+          });
 
         case "common":
           return res.json({ 
-            reply: "I am your ITDLH assistant. What can I help you with?\n\n💡 I can help you with information about our courses, fees, duration, start dates, eligibility, lecturers, location, and contact details. What would you like to know?"
+            reply: "I am your ITDLH assistant! 🤖\n\n💡 I can help you with:\n• Course information\n• Fees & payment\n• Duration & schedules\n• Eligibility requirements\n• Lecturers & facilities\n• Location & contact\n\nWhat would you like to know?"
           });
-          
 
         case "about":
           return res.json({ 
-            reply: `🏛️ About Us:\n\nWe are ${data.institute_type} located in Negombo, providing quality IT and English courses.\n\n💡 You can ask about:\n• Courses\n• Fees\n• Duration\n• Start dates\n• Lecturers\n• Location\n• Contact information` 
+            reply: `🏛️ About Us:\n\nWe are ${data.institute_type} located in Negombo, providing quality IT and English courses.\n\n💡 You can ask about:\n• Courses & eligibility\n• Fees & scholarships\n• Duration & start dates\n• Lecturers & facilities\n• Location & contact information` 
           });
 
         default:
@@ -216,23 +310,22 @@ router.post("/", (req, res) => {
       }
     }
 
-    // 5️⃣ Check FAQs with stricter fuzzy match
+    // 8️⃣ Check FAQs with stricter fuzzy match
     const faqKeys = Object.keys(data.faqs);
     const faqMatches = stringSimilarity.findBestMatch(userMsg, faqKeys);
     if (faqMatches.bestMatch.rating > 0.4) {
       return res.json({ reply: data.faqs[faqMatches.bestMatch.target] });
     }
 
-    // 6️⃣ Fallback response
+    // 9️⃣ Fallback response
     return res.json({
-      reply: "I'm not sure I understood that. You can ask me about:\n• Courses\n• Fees & Payment\n• Duration\n• Start dates\n• Eligibility\n• Lecturers\n• Location\n• Contact information\n\nWhat would you like to know?",
+      reply: "I'm not sure I understood that. 🤔\n\nYou can ask me about:\n• Courses & programs\n• Fees & payment methods\n• Duration & start dates\n• Eligibility requirements\n• Lecturers & facilities\n• Location & contact information\n• Scholarships & timings\n\nWhat would you like to know?",
     });
   } catch (error) {
     console.error("Chatbot error:", error);
     return res.status(500).json({ reply: "Sorry, I'm experiencing technical difficulties. Please try again later." });
   }
 });
-
 
 // GET endpoint to fetch all data
 router.get('/data', (req, res) => {
