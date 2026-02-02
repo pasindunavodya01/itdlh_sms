@@ -128,9 +128,9 @@ export default function StudentDashboard() {
   }
 
   // Calculate total statistics
-  const totalCourseFee = courses.reduce((sum, course) => sum + parseFloat(course.amount || 0), 0);
-  const totalPaid = payments.reduce((sum, payment) => sum + parseFloat(payment.amount_paid || 0), 0);
-  const totalDue = payments.reduce((sum, payment) => sum + parseFloat(payment.amount_due || 0), 0);
+  const _totalCourseFee = courses.reduce((sum, course) => sum + parseFloat(course.amount || 0), 0);
+  const _totalPaid = payments.reduce((sum, payment) => sum + parseFloat(payment.amount_paid || 0), 0);
+  const _totalDue = payments.reduce((sum, payment) => sum + parseFloat(payment.amount_due || 0), 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">

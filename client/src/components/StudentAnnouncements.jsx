@@ -120,8 +120,8 @@ export default function StudentAnnouncements() {
   });
 
   // Count statistics
-  const unreadCount = announcements.filter(a => !a.is_read).length;
-  const highPriorityCount = announcements.filter(a => a.priority === 'high').length;
+
+ 
 
   if (loading) {
     return (
