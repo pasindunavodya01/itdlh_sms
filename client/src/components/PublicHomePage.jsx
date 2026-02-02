@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -148,10 +149,10 @@ const PublicHomePage = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+            <a href="#home"><div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
               <FaGraduationCap className="text-white" />
-            </div>
-            ITDLH Negombo
+            </div></a>
+            <a href="#home">ITDLH Negombo</a>
           </motion.div>
           <div className="space-x-6 hidden lg:flex items-center">
   <a href="#home" className="hover:text-red-600 transition font-medium">Home</a>
@@ -1063,6 +1064,19 @@ const ChatBot = () => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
   const [showHighlight, setShowHighlight] = useState(true);
+  const inputRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesContainerRef = useRef(null);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+
+  const handleScroll = () => {
+    // update whether the user is near the bottom; if not, don't auto-scroll
+    const el = messagesContainerRef.current;
+    if (!el) return;
+    const threshold = 60; // px from bottom to still consider "at bottom"
+    const atBottom = el.scrollHeight - (el.scrollTop + el.clientHeight) <= threshold;
+    setIsAtBottom(atBottom);
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -1077,13 +1091,16 @@ const ChatBot = () => {
   }, []);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    // only auto-scroll if the user hasn't scrolled up
+    if (isAtBottom) scrollToBottom();
+  }, [messages, isAtBottom]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
-    
+
+    // add user message and show typing indicator
     setMessages(prev => [...prev, { from: "user", text: input }]);
+    setIsTyping(true);
 
     try {
       const res = await fetch("https://itdlhsms-production.up.railway.app/api/chatbot", {
@@ -1097,110 +1114,180 @@ const ChatBot = () => {
       setMessages(prev => [...prev, { from: "bot", text: data.reply }]);
     } catch (error) {
       setMessages(prev => [...prev, { from: "bot", text: "⚠️ Error connecting to server." }]);
+    } finally {
+      setIsTyping(false);
     }
 
     setInput("");
+    // focus back to input after sending
+    inputRef.current?.focus();
   };
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-end gap-3">
-      {/* Chat Window */}
-      {open && (
-        <motion.div
-          className="w-full max-w-md sm:w-96 bg-white shadow-2xl rounded-2xl overflow-hidden mb-4 flex flex-col"
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-        >
-          {/* Header */}
-          <div className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 sm:px-6 py-3 flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <FaRobot className="text-xl" />
-              </div>
-              <div>
-                <div className="font-bold text-sm sm:text-base">ITDLH Assistant</div>
-                <div className="text-xs sm:text-sm text-white/80">● Online</div>
-              </div>
-            </div>
-            <button
-              onClick={() => setOpen(false)}
-              className="w-8 h-8 hover:bg-white/20 rounded-full flex items-center justify-center transition"
-            >
-              <FaTimes />
-            </button>
+    {/* Chat Window */}
+{open && (
+  <motion.div
+    className="
+      fixed sm:absolute
+      bottom-3 sm:bottom-20
+      left-3 right-3 sm:left-auto sm:right-0
+      w-auto sm:w-96
+      bg-white shadow-2xl
+      rounded-2xl
+      overflow-hidden
+      flex flex-col
+      z-50
+    "
+    initial={{ opacity: 0, y: 40 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: 40 }}
+    drag="y"
+    dragConstraints={{ top: 0, bottom: 200 }}
+    onDragEnd={(e, info) => {
+      if (info.offset.y > 120) setOpen(false);
+    }}
+  >
+    {/* Header */}
+    <div className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-3 flex justify-between items-center">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+          <FaRobot className="text-xl" />
+        </div>
+        <div>
+          <div className="font-bold text-sm sm:text-base">
+            ITDLH Assistant
           </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50 max-h-[50vh] sm:max-h-96">
-            {messages.map((msg, idx) => (
-              <motion.div
-                key={idx}
-                className={`mb-3 flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <div
-                  className={`max-w-[75%] rounded-2xl px-3 py-2 sm:px-4 sm:py-3 ${
-                    msg.from === "user" ? "bg-red-600 text-white" : "bg-white text-gray-800 shadow-md"
-                  }`}
-                  style={{ whiteSpace: "pre-wrap" }}
-                >
-                  {msg.text}
-                </div>
-              </motion.div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input Area */}
-          <div className="p-3 sm:p-4 bg-white border-t border-gray-200">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
-                className="flex-1 border border-gray-300 rounded-full px-3 py-2 sm:px-4 sm:py-3 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
-                onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              />
-              <button
-                onClick={handleSend}
-                className="bg-red-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-red-700 transition font-semibold text-sm sm:text-base"
-              >
-                Send
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Highlight Bubble */}
-      {showHighlight && !open && (
-        <motion.div
-          className="bg-white text-gray-800 px-4 py-2 rounded-lg shadow-lg text-sm font-semibold"
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 10 }}
-          transition={{ duration: 0.3 }}
-        >
-          Chat with our agent!
-        </motion.div>
-      )}
-
-      {/* Floating Button */}
-      <div className="relative">
-        <motion.button
-          onClick={() => setOpen(!open)}
-          className="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 text-white rounded-full shadow-2xl hover:shadow-3xl transition flex items-center justify-center"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {open ? <FaTimes className="text-2xl" /> : <FaRobot className="text-2xl" />}
-        </motion.button>
-        {showHighlight && !open && (
-          <div className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-        )}
+          <div className="text-xs text-white/80">● Online</div>
+        </div>
       </div>
+
+      <button
+        onClick={() => setOpen(false)}
+        className="w-8 h-8 hover:bg-white/20 rounded-full flex items-center justify-center transition"
+      >
+        <FaTimes />
+      </button>
+    </div>
+
+    {/* Messages */}
+    <div
+      className="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50 max-h-[60vh] sm:max-h-96"
+      onScroll={handleScroll}
+    >
+      {messages.map((msg, idx) => (
+        <motion.div
+          key={idx}
+          className={`mb-3 flex ${
+            msg.from === "user" ? "justify-end" : "justify-start"
+          }`}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`
+              max-w-[85%] sm:max-w-[75%]
+              rounded-2xl px-3 py-2 sm:px-4 sm:py-3
+              ${
+                msg.from === "user"
+                  ? "bg-red-600 text-white"
+                  : "bg-white text-gray-800 shadow-md"
+              }
+            `}
+            style={{ whiteSpace: "pre-wrap" }}
+          >
+            {msg.text}
+          </motion.div>
+        </motion.div>
+      ))}
+
+      {/* Typing Indicator */}
+      {isTyping && (
+        <div className="flex justify-start mb-3">
+          <div className="bg-white shadow-md rounded-2xl px-4 py-2 text-sm text-gray-500">
+            Assistant is typing…
+          </div>
+        </div>
+      )}
+
+      <div ref={messagesEndRef} />
+    </div>
+
+    {/* Input Area */}
+    <div className="p-3 sm:p-4 bg-white border-t border-gray-200 pb-safe">
+      <div className="flex gap-2">
+        <input
+          ref={inputRef}
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message..."
+          className="
+            flex-1 border border-gray-300 rounded-full
+            px-4 py-3
+            focus:outline-none focus:ring-2 focus:ring-red-500
+            text-sm sm:text-base
+          "
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+        />
+
+        <button
+          onClick={handleSend}
+          disabled={!input.trim()}
+          className="
+            bg-red-600 text-white
+            px-5 py-3 rounded-full
+            hover:bg-red-700
+            transition font-semibold
+            disabled:opacity-40
+            disabled:cursor-not-allowed
+            text-sm sm:text-base
+          "
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  </motion.div>
+)}
+
+{/* Highlight Bubble */}
+{showHighlight && !open && (
+  <motion.div
+    className="mb-3 bg-white text-gray-800 px-4 py-2 rounded-lg shadow-lg text-sm font-semibold"
+    initial={{ opacity: 0, x: 10 }}
+    animate={{ opacity: 1, x: 0 }}
+    exit={{ opacity: 0, x: 10 }}
+  >
+    Chat with our agent!
+  </motion.div>
+)}
+
+{/* Floating Button */}
+<div className="relative">
+  <motion.button
+    onClick={() => setOpen(true)}
+    className="
+      w-14 h-14 sm:w-16 sm:h-16
+      bg-gradient-to-br from-red-600 to-orange-600
+      text-white rounded-full
+      shadow-2xl
+      flex items-center justify-center
+    "
+    whileHover={{ scale: 1.1 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    <FaRobot className="text-2xl" />
+  </motion.button>
+
+  {showHighlight && !open && (
+    <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
+  )}
+</div>
+
+
     </div>
   );
 };
